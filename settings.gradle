@@ -1,0 +1,42 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        google()
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven { url 'https://maven.google.com' }
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google/' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+    }
+}
+rootProject.name = "BleSdkDemoPro"
+include ':app'
+
+if (USE_BLE_TYPE as int == 0) {
+    include ':qnpluginX'
+    include ':qnheightweightscalepluginX'
+} else if (USE_BLE_TYPE as int == 2) {
+    //基础SDK
+    include ':qnplugin'
+    project(":qnplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnplugin')
+    include ':blecenter'
+    project(":blecenter").projectDir = new File(rootProject.projectDir, '../BleLibPro/blecenter')
+
+    //身高体重秤
+    include ':qnheightweightscaleplugin'
+    project(":qnheightweightscaleplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnheightweightscaleplugin')
+    include ':heightscale'
+    project(":heightscale").projectDir = new File(rootProject.projectDir, '../BleLibPro/heightscale')
+}
