@@ -3,6 +3,8 @@ package com.qingniu.blesdkdemopro
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,7 +17,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +25,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.qingniu.blecenter.utils.BleUtils
+import com.qingniu.blesdkdemopro.db.DemoDataBase
 import com.qingniu.blesdkdemopro.ui.theme.BgGrey
 import com.qingniu.blesdkdemopro.ui.theme.BleSdkDemoProTheme
 import com.qingniu.blesdkdemopro.ui.theme.DividerGrey
@@ -44,7 +48,9 @@ class HeightMeasureActivity : ComponentActivity() {
         }
     }
 
-    val mHeightScaleViewModel = HeightScaleViewModel()
+    lateinit var mHeightScaleViewModel: HeightScaleViewModel
+
+    val mHandler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,32 +61,15 @@ class HeightMeasureActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+                    mHeightScaleViewModel = viewModel()
                     Box(
                         Modifier
                             .fillMaxSize()
                             .background(BgGrey)
                     ) {
-                        val macS = remember {
-                            mHeightScaleViewModel.mac
-                        }
-                        val vStateS = remember {
-                            mHeightScaleViewModel.vState
-                        }
-                        val weightS = remember {
-                            mHeightScaleViewModel.weight
-                        }
-                        val heightS = remember {
-                            mHeightScaleViewModel.height
-                        }
-                        val weightUnitS = remember {
-                            mHeightScaleViewModel.weightUnit
-                        }
-                        val heightUnitS = remember {
-                            mHeightScaleViewModel.heightUnit
-                        }
                         TitleBar("Height Scale", true)
-                        StatusBar("OPEN")
-                        MeasureBoard(macS, vStateS, weightS, heightS, weightUnitS, heightUnitS)
+                        StatusBar()
+                        MeasureBoard()
                     }
                 }
             }
@@ -196,7 +185,25 @@ class HeightMeasureActivity : ComponentActivity() {
 }
 
 @Composable
-fun StatusBar(status: String) {
+fun StatusBar() {
+    val ctx = LocalContext.current
+    val hsvm:HeightScaleViewModel = viewModel()
+    val status = if (!BleUtils.isBlueToothSwitchOn(ctx)){
+        "Bluetooth switch is disabled"
+    }else if (!BleUtils.isRunOnAndroid12Mode(ctx) && !BleUtils.isBlueToothSwitchOn(ctx)){
+        "Location switch is disabled"
+    }else if(!BleUtils.hasBlePermission(ctx)){
+        "Need bluetooth permission"
+    }else{
+        when (hsvm.vState.value) {
+            HeightScaleViewModel.MeasureState.CONNECT -> "Connected"
+            HeightScaleViewModel.MeasureState.DISCONNECT -> "Disconnected"
+            HeightScaleViewModel.MeasureState.MEASURE_WEIGHT -> "Measure weight"
+            HeightScaleViewModel.MeasureState.MEASURE_HEIGHT -> "Measure height"
+            HeightScaleViewModel.MeasureState.MEASURE_END -> "Measure end"
+            HeightScaleViewModel.MeasureState.MEASURE_FAIL -> "Measure fail"
+        }
+    }
     Box(
         Modifier
             .padding(top = 50.dp)
@@ -214,40 +221,47 @@ fun StatusBar(status: String) {
 }
 
 @Composable
-fun MeasureBoard(
-    mac:MutableState<String>,vState: MutableState<HeightScaleViewModel.MeasureState>,
-    weight: MutableState<String>, height: MutableState<String>,
-    weightUnit: MutableState<String>, heightUnit: MutableState<String>
-) {
+fun MeasureBoard() {
     val ctx = LocalContext.current
+    val hsvm:HeightScaleViewModel = viewModel()
     Column(
         Modifier
             .padding(top = 100.dp)
             .fillMaxSize()
     ) {
+        val cMac = hsvm.mac.value
+        val cWeight = hsvm.weight.value
+        val cWeightUnit = DemoDataBase.getInstance(ctx).unitSettingDao().getUnitSetting().weightUnit
+        val cHeight = hsvm.height.value
+        val cLengthUnit = DemoDataBase.getInstance(ctx).unitSettingDao().getUnitSetting().lengthUnit
+        val cvState = hsvm.vState.value
+
         Box(
             Modifier
                 .fillMaxWidth()
                 .height(30.dp)
         ) {
             Text(
-                text = mac.value,
+                text = cMac,
                 Modifier
                     .align(Alignment.CenterStart)
                     .padding(start = 20.dp)
             )
             Text(
-                text = QNPlugin.getInstance(ctx).appId,
+                text = "AppId: "+QNPlugin.getInstance(ctx).appId,
                 Modifier
                     .align(Alignment.CenterEnd)
                     .padding(end = 20.dp)
             )
         }
         Text(
-            text = if (vState.value == HeightScaleViewModel.MeasureState.MEASURE_HEIGHT) {
-                "${weight.value} ${weightUnit.value}"
-            } else if (vState.value == HeightScaleViewModel.MeasureState.MEASURE_WEIGHT) {
-                "${height.value} ${heightUnit.value}"
+            text = if (cvState == HeightScaleViewModel.MeasureState.MEASURE_WEIGHT) {
+                "$cWeight $cWeightUnit"
+            } else if (cvState == HeightScaleViewModel.MeasureState.MEASURE_HEIGHT ||
+                cvState == HeightScaleViewModel.MeasureState.MEASURE_END ||
+                cvState == HeightScaleViewModel.MeasureState.MEASURE_FAIL
+            ) {
+                "$cHeight $cLengthUnit"
             } else {
                 ""
             },
@@ -257,10 +271,10 @@ fun MeasureBoard(
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 10.dp, bottom = 10.dp)
         )
-        if (vState.value == HeightScaleViewModel.MeasureState.MEASURE_END){
-            Column() {
-                Indicator("weight", weight.value + "kg", false)
-                Indicator("height", height.value + "cm", false)
+        if (cvState == HeightScaleViewModel.MeasureState.MEASURE_END) {
+            Column {
+                Indicator("weight", "$cWeight $cWeightUnit", false)
+                Indicator("height", "$cHeight $cLengthUnit", false)
                 Indicator("bmi", "", true)
             }
         }
@@ -321,8 +335,5 @@ class HeightScaleViewModel : ViewModel() {
     var mac: MutableState<String> = mutableStateOf("")
     var weight: MutableState<String> = mutableStateOf("--")
     var height: MutableState<String> = mutableStateOf("--")
-    var weightUnit: MutableState<String> = mutableStateOf("KG")
-    var heightUnit: MutableState<String> = mutableStateOf("CM")
-
     var vState:MutableState<MeasureState> = mutableStateOf(MeasureState.DISCONNECT)
 }
