@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.TextUtils
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,12 +34,14 @@ import com.qingniu.blesdkdemopro.ui.theme.BleSdkDemoProTheme
 import com.qingniu.blesdkdemopro.ui.theme.DividerGrey
 import com.qingniu.blesdkdemopro.ui.theme.TipGrey
 import com.qingniu.blesdkdemopro.ui.widget.TitleBar
+import com.qingniu.blesdkdemopro.util.NumberUtils
 import com.qingniu.qnheightweightscaleplugin.QNHeightWeightScalePlugin
 import com.qingniu.qnheightweightscaleplugin.listener.QNHeightWeightScaleDataListener
 import com.qingniu.qnheightweightscaleplugin.listener.QNHeightWeightScaleStatusListener
 import com.qingniu.qnheightweightscaleplugin.model.*
 import com.qingniu.qnplugin.QNPlugin
 import com.qingniu.qnplugin.inter.QNResultCallback
+import com.qingniu.qnplugin.inter.QNScanListener
 
 class HeightMeasureActivity : ComponentActivity() {
 
@@ -51,6 +54,8 @@ class HeightMeasureActivity : ComponentActivity() {
     lateinit var mHeightScaleViewModel: HeightScaleViewModel
 
     val mHandler = Handler(Looper.getMainLooper())
+
+    var qnHeightWeightScaleDevice: QNHeightWeightScaleDevice? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +82,14 @@ class HeightMeasureActivity : ComponentActivity() {
         initQNHeightWeightScale()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        QNPlugin.getInstance(this).stopScan()
+        qnHeightWeightScaleDevice?.let {
+            QNHeightWeightScalePlugin.cancelConnectHeightWeightScaleDevice(it)
+        }
+    }
+
     private fun initQNHeightWeightScale() {
         QNHeightWeightScalePlugin.setScalePlugin(
             (application as BaseApplication).getQNPlugin(),
@@ -87,19 +100,9 @@ class HeightMeasureActivity : ComponentActivity() {
                 }
             })
         QNHeightWeightScalePlugin.setDeviceListener {
+            qnHeightWeightScaleDevice = it
             QNPlugin.getInstance(this).stopScan()
             Log.e("qzx", it.toString())
-            val operate = QNHeightWeightScaleOperate()
-            operate.heightUnit = QNHeightUnit.QNHeightUnitCm
-            operate.weightUnit = QNWeightUnit.QNWeightUnitKg
-            QNHeightWeightScalePlugin.connectHeightWeightScaleDevice(
-                it,
-                operate,
-                object : QNResultCallback {
-                    override fun onResult(code: Int, msg: String?) {
-                        Log.e("qzx", "code: $code, msg: $msg")
-                    }
-                })
         }
         QNHeightWeightScalePlugin.setStatusListener(object : QNHeightWeightScaleStatusListener {
             override fun onHeightWeightScaleConnectedSuccess(device: QNHeightWeightScaleDevice) {
@@ -126,8 +129,7 @@ class HeightMeasureActivity : ComponentActivity() {
 
             override fun onHeightWeightScaleDisconnected(device: QNHeightWeightScaleDevice?) {
                 Log.e("qzx", "onHeightWeightScaleDisconnected")
-            }
-
+                mHeightScaleViewModel.vState.value = HeightScaleViewModel.MeasureState.DISCONNECT}
         })
         QNHeightWeightScalePlugin.setDataListener(object : QNHeightWeightScaleDataListener {
             override fun onHeightWeightScaleRealTimeWeight(
@@ -136,7 +138,17 @@ class HeightMeasureActivity : ComponentActivity() {
             ) {
                 Log.e("qzx", "onHeightWeightScaleRealTimeWeight, weight = $weight")
                 mHeightScaleViewModel.apply {
-                    this.weight.value = weight
+                    val curWeightUnit = DemoDataBase.getInstance(this@HeightMeasureActivity)
+                        .unitSettingDao().getUnitSetting().weightUnit
+
+                    this.weight.value =  when(curWeightUnit){
+                        "KG" -> weight
+                        "LB" -> NumberUtils.kgToLb(weight.toFloat()).toString()
+                        "ST+LB" ->""
+                        "ST" -> NumberUtils.lBToStFloat(NumberUtils.kgToLb(weight.toFloat())).toString()
+                        "斤" -> (weight.toDouble() * 2).toString()
+                        else -> weight
+                    }
                     this.vState.value = HeightScaleViewModel.MeasureState.MEASURE_WEIGHT
                 }
             }
@@ -147,7 +159,14 @@ class HeightMeasureActivity : ComponentActivity() {
             ) {
                 Log.e("qzx", "onHeightWeightScaleRealTimeHeight, height = $height")
                 mHeightScaleViewModel.apply {
-                    this.height.value = height
+                    val curLengthUnit = DemoDataBase.getInstance(this@HeightMeasureActivity)
+                        .unitSettingDao().getUnitSetting().lengthUnit
+
+                    this.height.value =  when(curLengthUnit){
+                        "CM" -> height
+                        "FT:IN" -> NumberUtils.cmToFtStr(height.toDouble())
+                        else -> height
+                    }
                     this.vState.value = HeightScaleViewModel.MeasureState.MEASURE_HEIGHT
                 }
             }
@@ -158,8 +177,27 @@ class HeightMeasureActivity : ComponentActivity() {
             ) {
                 Log.e("qzx", "onHeightWeightScaleReceiveMeasureResult, result = $scaleData")
                 mHeightScaleViewModel.apply {
-                    this.weight.value = scaleData.weight
-                    this.height.value = scaleData.height
+                    val curWeightUnit = DemoDataBase.getInstance(this@HeightMeasureActivity)
+                        .unitSettingDao().getUnitSetting().weightUnit
+
+                    this.weight.value =  when(curWeightUnit){
+                        "KG" -> scaleData.weight
+                        "LB" -> NumberUtils.kgToLb(scaleData.weight.toFloat()).toString()
+                        "ST+LB" ->""
+                        "ST" -> NumberUtils.lBToStFloat(NumberUtils.kgToLb(scaleData.weight.toFloat())).toString()
+                        "斤" -> (scaleData.weight.toDouble() * 2).toString()
+                        else -> scaleData.weight
+                    }
+
+                    val curLengthUnit = DemoDataBase.getInstance(this@HeightMeasureActivity)
+                        .unitSettingDao().getUnitSetting().lengthUnit
+
+                    this.height.value =  when(curLengthUnit){
+                        "CM" -> scaleData.height
+                        "FT:IN" -> NumberUtils.cmToFtStr(scaleData.height.toDouble())
+                        else -> scaleData.height
+                    }
+                    this.bmi.value = scaleData.bmi
                     this.vState.value = HeightScaleViewModel.MeasureState.MEASURE_END
                 }
             }
@@ -175,6 +213,46 @@ class HeightMeasureActivity : ComponentActivity() {
 
         })
 
+        QNPlugin.getInstance(this).setQnScanListener(object :QNScanListener{
+            override fun onStartScan() {
+                qnHeightWeightScaleDevice = null
+            }
+
+            override fun onStopScan() {
+                qnHeightWeightScaleDevice?.let {
+
+                    val operate = QNHeightWeightScaleOperate()
+
+                    val curWeightUnit = DemoDataBase.getInstance(this@HeightMeasureActivity)
+                        .unitSettingDao().getUnitSetting().weightUnit
+
+                    val curLengthUnit = DemoDataBase.getInstance(this@HeightMeasureActivity)
+                        .unitSettingDao().getUnitSetting().lengthUnit
+
+                    operate.heightUnit =  when (curLengthUnit) {
+                        "CM" -> QNHeightUnit.QNHeightUnitCm
+                        "FT:IN" -> QNHeightUnit.QNHeightUnitFtIn
+                        else -> QNHeightUnit.QNHeightUnitCm
+                    }
+                    operate.weightUnit = when (curWeightUnit) {
+                        "KG" -> QNWeightUnit.QNWeightUnitKg
+                        "LB" -> QNWeightUnit.QNWeightUnitLb
+                        "ST+LB" -> QNWeightUnit.QNWeightUnitStLb
+                        "ST" -> QNWeightUnit.QNWeightUnitSt
+                        "斤" -> QNWeightUnit.QNWeightUnitJin
+                        else -> QNWeightUnit.QNWeightUnitKg
+                    }
+                    QNHeightWeightScalePlugin.connectHeightWeightScaleDevice(
+                        it,
+                        operate,
+                        object : QNResultCallback {
+                            override fun onResult(code: Int, msg: String?) {
+                                Log.e("qzx", "code: $code, msg: $msg")
+                            }
+                        })
+                }
+            }
+        })
 
         QNPlugin.getInstance(this).startScan(object : QNResultCallback {
             override fun onResult(p0: Int, p1: String?) {
@@ -189,9 +267,9 @@ fun StatusBar() {
     val ctx = LocalContext.current
     val hsvm:HeightScaleViewModel = viewModel()
     val status = if (!BleUtils.isBlueToothSwitchOn(ctx)){
-        "Bluetooth switch is disabled"
+        "Bluetooth turn off"
     }else if (!BleUtils.isRunOnAndroid12Mode(ctx) && !BleUtils.isBlueToothSwitchOn(ctx)){
-        "Location switch is disabled"
+        "Location turn off"
     }else if(!BleUtils.hasBlePermission(ctx)){
         "Need bluetooth permission"
     }else{
@@ -235,6 +313,7 @@ fun MeasureBoard() {
         val cHeight = hsvm.height.value
         val cLengthUnit = DemoDataBase.getInstance(ctx).unitSettingDao().getUnitSetting().lengthUnit
         val cvState = hsvm.vState.value
+        val cBmi = hsvm.bmi.value
 
         Box(
             Modifier
@@ -259,7 +338,8 @@ fun MeasureBoard() {
                 "$cWeight $cWeightUnit"
             } else if (cvState == HeightScaleViewModel.MeasureState.MEASURE_HEIGHT ||
                 cvState == HeightScaleViewModel.MeasureState.MEASURE_END ||
-                cvState == HeightScaleViewModel.MeasureState.MEASURE_FAIL
+                cvState == HeightScaleViewModel.MeasureState.MEASURE_FAIL ||
+                !(TextUtils.isEmpty(cBmi))
             ) {
                 "$cHeight $cLengthUnit"
             } else {
@@ -271,11 +351,11 @@ fun MeasureBoard() {
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 10.dp, bottom = 10.dp)
         )
-        if (cvState == HeightScaleViewModel.MeasureState.MEASURE_END) {
+        if (cvState == HeightScaleViewModel.MeasureState.MEASURE_END || !(TextUtils.isEmpty(cBmi))) {
             Column {
                 Indicator("weight", "$cWeight $cWeightUnit", false)
                 Indicator("height", "$cHeight $cLengthUnit", false)
-                Indicator("bmi", "", true)
+                Indicator("bmi", cBmi, true)
             }
         }
     }
@@ -335,5 +415,6 @@ class HeightScaleViewModel : ViewModel() {
     var mac: MutableState<String> = mutableStateOf("")
     var weight: MutableState<String> = mutableStateOf("--")
     var height: MutableState<String> = mutableStateOf("--")
+    var bmi: MutableState<String> = mutableStateOf("")
     var vState:MutableState<MeasureState> = mutableStateOf(MeasureState.DISCONNECT)
 }

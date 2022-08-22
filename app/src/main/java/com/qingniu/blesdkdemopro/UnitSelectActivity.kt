@@ -112,9 +112,9 @@ class UnitSelectActivity : ComponentActivity() {
                                 dao.update(unit)
                                 lengthUnit.value = unit.lengthUnit
                             }
-                            UnitItem(unit = "FT", checkState = { lengthUnit.value == "FT" }) {
+                            UnitItem(unit = "FT:IN", checkState = { lengthUnit.value == "FT:IN" }) {
                                 val unit = dao.getUnitSetting().apply {
-                                    this.lengthUnit = "FT"
+                                    this.lengthUnit = "FT:IN"
                                 }
                                 dao.update(unit)
                                 lengthUnit.value = unit.lengthUnit
