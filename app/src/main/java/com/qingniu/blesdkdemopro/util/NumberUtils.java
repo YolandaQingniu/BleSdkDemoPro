@@ -170,7 +170,7 @@ public class NumberUtils {
      * @return
      */
     public static float getOnePrecision(float f) {
-        return getOnePrecision((double) f);
+        return getOnePrecision((double) f,BigDecimal.ROUND_HALF_UP);
     }
 
     /**
@@ -182,10 +182,10 @@ public class NumberUtils {
         return getOnePrecision(((int) ((temp * 11023 + 50000) / 100000) << 1) / 10f);
     }
 
-    public static float getOnePrecision(double f) {
+    public static float getOnePrecision(double f,int roundMode) {
         float value;
         try {
-            value = new BigDecimal(String.valueOf(f)).setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+            value = new BigDecimal(String.valueOf(f)).setScale(1, roundMode).floatValue();
         } catch (NumberFormatException e) {
             value = 0;
         }
@@ -202,7 +202,7 @@ public class NumberUtils {
     }
 
     public static float getTwoPrecision(double d) {
-        return new BigDecimal(String.valueOf(d)).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+        return new BigDecimal(String.valueOf(d)).setScale(2, BigDecimal.ROUND_DOWN).floatValue();
     }
 
     public static float lBToStFloat(float lb) {
@@ -262,14 +262,14 @@ public class NumberUtils {
      * 磅转成kg
      */
     public static double lbToKg(double lb) {
-        return getOnePrecision(lb * 10000 / 11023 / 2);
+        return getOnePrecision(lb * 10000 / 11023 / 2,BigDecimal.ROUND_HALF_UP);
     }
 
     /**
      * 英尺 转成厘米
      */
     public static float inchToCm(float in) {
-        return getOnePrecision(in * hUnit);
+        return getOnePrecision(in * hUnit,BigDecimal.ROUND_HALF_UP);
     }
 
     /**
@@ -294,7 +294,7 @@ public class NumberUtils {
         String[] values = new String[2];
         float in = cmToInch((float) cm);
         values[0] = String.valueOf((int) getOnePrecision(in / 12));
-        values[1] = String.valueOf(getOnePrecision(in - Double.parseDouble(values[0]) * 12));
+        values[1] = String.valueOf(getOnePrecision(in - Double.parseDouble(values[0]) * 12,BigDecimal.ROUND_DOWN));
         return values;
     }
 

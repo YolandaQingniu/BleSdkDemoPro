@@ -19,7 +19,7 @@ abstract class DemoDataBase : RoomDatabase() {
     companion object {
         @Volatile
         private var sInstance: DemoDataBase? = null
-        private const val DATA_BASE_NAME = "jetpack_movie.db"
+        private const val DATA_BASE_NAME = "demo.db"
 
         @JvmStatic
         fun getInstance(context: Context): DemoDataBase {
