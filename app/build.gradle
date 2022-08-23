@@ -12,7 +12,7 @@ android {
         minSdk 21
         targetSdk 32
         versionCode 1
-        versionName "1.0"
+        versionName "0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -20,9 +20,25 @@ android {
         }
     }
 
+    signingConfigs {
+        myConfig {
+            storeFile file("../buildsystem/qnsdk_demo.jks")
+            storePassword "123456"
+            keyAlias "qntest_demo"
+            keyPassword "123456"
+        }
+    }
+
     buildTypes {
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.myConfig
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
         release {
             minifyEnabled false
+            signingConfig signingConfigs.myConfig
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -30,6 +46,19 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def str = variant.buildType.name
+                def buildTime = new Date().format("yyyy-MM-dd", TimeZone.getTimeZone('UTC'))
+                def fileName = "BleSdkDemoPro_${str}_${defaultConfig.versionName}_${buildTime}.apk"
+                output.outputFileName = fileName
+            }
+        }
+    }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -79,8 +108,8 @@ dependencies {
         implementation project(':qnpluginX')
         implementation project(':qnheightweightscalepluginX')
     } else if (USE_BLE_TYPE as int == 1) {
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnpluginX:0.12"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnheightweightscalepluginX:0.12"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnpluginX:0.1"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnheightweightscalepluginX:0.1"
     } else if (USE_BLE_TYPE as int == 2) {
         implementation project(':qnplugin')
         implementation project(':qnheightweightscaleplugin')
