@@ -42,10 +42,10 @@ allprojects {
 
 Core Plugin (necessary):
 
-implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnpluginX:1.0.0"
+implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnpluginX:1.0.1"
 
 
 
 HeightWeightScale Plugin:
 
-implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnheightweightscalepluginX:1.0.0"
+implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnheightweightscalepluginX:1.0.1"

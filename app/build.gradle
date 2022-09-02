@@ -12,7 +12,7 @@ android {
         minSdk 21
         targetSdk 32
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -108,8 +108,8 @@ dependencies {
         implementation project(':qnpluginX')
         implementation project(':qnheightweightscalepluginX')
     } else if (USE_BLE_TYPE as int == 1) {
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnpluginX:1.0.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnheightweightscalepluginX:1.0.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnpluginX:1.0.1"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnheightweightscalepluginX:1.0.1"
     } else if (USE_BLE_TYPE as int == 2) {
         implementation project(':qnplugin')
         implementation project(':qnheightweightscaleplugin')

@@ -40,7 +40,6 @@ import com.qingniu.qnheightweightscaleplugin.listener.QNHeightWeightScaleDataLis
 import com.qingniu.qnheightweightscaleplugin.listener.QNHeightWeightScaleStatusListener
 import com.qingniu.qnheightweightscaleplugin.model.*
 import com.qingniu.qnplugin.QNPlugin
-import com.qingniu.qnplugin.inter.QNResultCallback
 import com.qingniu.qnplugin.inter.QNScanListener
 
 class HeightMeasureActivity : ComponentActivity() {
@@ -120,18 +119,14 @@ class HeightMeasureActivity : ComponentActivity() {
     }
 
     private fun initQNHeightWeightScale() {
-        QNHeightWeightScalePlugin.setScalePlugin(QNPlugin.getInstance(this),
-            object : QNResultCallback {
-                override fun onResult(code: Int, msg: String?) {
-                    Log.e("qzx", "code: $code, msg: $msg")
-                }
-            })
-        QNHeightWeightScalePlugin.setDeviceListener {
-            qnHeightWeightScaleDevice = it
-            QNPlugin.getInstance(this).stopScan()
-            Log.e("qzx", it.toString())
-        }
+        QNHeightWeightScalePlugin.setScalePlugin(QNPlugin.getInstance(this))
+
         QNHeightWeightScalePlugin.setStatusListener(object : QNHeightWeightScaleStatusListener {
+            override fun onDiscoverScaleDevice(device: QNHeightWeightScaleDevice) {
+                qnHeightWeightScaleDevice = device
+                QNPlugin.getInstance(this@HeightMeasureActivity).stopScan()
+            }
+
             override fun onHeightWeightScaleConnectedSuccess(device: QNHeightWeightScaleDevice) {
                 Log.e("qzx", "onHeightWeightScaleConnectedSuccess")
                 mHeightScaleViewModel.mac.value = device.mac
@@ -139,7 +134,6 @@ class HeightMeasureActivity : ComponentActivity() {
             }
 
             override fun onHeightWeightScaleConnectFail(
-                code: Int,
                 device: QNHeightWeightScaleDevice?
             ) {
                 Log.e("qzx", "onHeightWeightScaleConnectFail")
@@ -148,7 +142,6 @@ class HeightMeasureActivity : ComponentActivity() {
             }
 
             override fun onHeightWeightScaleReadyInteractResult(
-                code: Int,
                 device: QNHeightWeightScaleDevice?
             ) {
                 Log.e("qzx", "onHeightWeightScaleReadyInteractResult")
@@ -235,23 +228,12 @@ class HeightMeasureActivity : ComponentActivity() {
                         DemoUnit.JIN.showName -> QNWeightUnit.QNWeightUnitJin
                         else -> QNWeightUnit.QNWeightUnitKg
                     }
-                    QNHeightWeightScalePlugin.connectHeightWeightScaleDevice(
-                        it,
-                        operate,
-                        object : QNResultCallback {
-                            override fun onResult(code: Int, msg: String?) {
-                                Log.e("qzx", "code: $code, msg: $msg")
-                            }
-                        })
+                    QNHeightWeightScalePlugin.connectHeightWeightScaleDevice(it, operate)
                 }
             }
         })
 
-        QNPlugin.getInstance(this).startScan(object : QNResultCallback {
-            override fun onResult(p0: Int, p1: String?) {
-                Log.e("hyrrr", "$p0 $p1")
-            }
-        })
+        QNPlugin.getInstance(this).startScan()
     }
 }
 
