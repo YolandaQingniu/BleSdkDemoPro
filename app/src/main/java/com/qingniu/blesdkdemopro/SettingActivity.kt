@@ -64,8 +64,12 @@ fun Settings() {
             .background(Color.White)
     ) {
         val ctx = LocalContext.current
-        SettingItem(text = "Unit Setting", false) {
+        SettingItem(text = "Unit Setting", true) {
             ctx.startActivity(UnitSelectActivity.getCallIntent(ctx))
+        }
+
+        SettingItem(text = "User Setting", false) {
+            ctx.startActivity(UserSettingActivity.getCallIntent(ctx))
         }
     }
 }

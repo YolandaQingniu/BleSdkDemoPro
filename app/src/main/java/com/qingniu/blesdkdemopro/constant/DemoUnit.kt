@@ -13,4 +13,6 @@ enum class DemoUnit(val showName: String) {
     JIN("斤"),
     CM("CM"),
     FT_IN("FT:IN"),
+    MALE("MALE"),
+    FEMALE("FEMALE")
 }

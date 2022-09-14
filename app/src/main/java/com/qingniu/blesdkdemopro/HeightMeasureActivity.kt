@@ -38,9 +38,13 @@ import com.qingniu.blesdkdemopro.util.DemoBleUtils
 import com.qingniu.qnheightweightscaleplugin.QNHeightWeightScalePlugin
 import com.qingniu.qnheightweightscaleplugin.listener.QNHeightWeightScaleDataListener
 import com.qingniu.qnheightweightscaleplugin.listener.QNHeightWeightScaleStatusListener
-import com.qingniu.qnheightweightscaleplugin.model.*
+import com.qingniu.qnheightweightscaleplugin.model.QNHeightWeightScaleData
+import com.qingniu.qnheightweightscaleplugin.model.QNHeightWeightScaleDevice
+import com.qingniu.qnheightweightscaleplugin.model.QNHeightWeightScaleOperate
+import com.qingniu.qnheightweightscaleplugin.model.QNHeightWeightUser
 import com.qingniu.qnplugin.QNPlugin
 import com.qingniu.qnplugin.inter.QNScanListener
+import com.qingniu.qnplugin.model.QNGender
 import com.qingniu.qnplugin.model.QNHeightUnit
 import com.qingniu.qnplugin.model.QNWeightUnit
 
@@ -182,6 +186,21 @@ class HeightMeasureActivity : ComponentActivity() {
                 device: QNHeightWeightScaleDevice
             ) {
                 Log.e("qzx", "onHeightWeightScaleReceiveMeasureResult, result = $scaleData")
+
+
+                val gender = if (DemoDataBase.getInstance(this@HeightMeasureActivity)
+                        .userDao().getUser().gender == "MALE"
+                ) {
+                    QNGender.MALE
+                } else {
+                    QNGender.FEMALE
+                }
+
+                val age = DemoDataBase.getInstance(this@HeightMeasureActivity)
+                    .userDao().getUser().age
+
+                scaleData.makeDataComplete(QNHeightWeightUser("001", gender, age))
+
                 mHeightScaleViewModel.apply {
                     this.weightStr.value = createWeightStr(scaleData.weight)
                     this.heightStr.value = createHeightStr(scaleData.height)
@@ -199,6 +218,12 @@ class HeightMeasureActivity : ComponentActivity() {
                 }
             }
 
+            override fun onHeightWeightScaleReceiveStorageData(
+                list: MutableList<QNHeightWeightScaleData>,
+                device: QNHeightWeightScaleDevice
+            ) {
+
+            }
         })
 
         QNPlugin.getInstance(this).setQnScanListener(object : QNScanListener {

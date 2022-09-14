@@ -25,6 +25,7 @@ import com.qingniu.blesdkdemopro.db.DemoDataBase
 import com.qingniu.blesdkdemopro.ui.theme.BgGrey
 import com.qingniu.blesdkdemopro.ui.theme.DividerGrey
 import com.qingniu.blesdkdemopro.ui.theme.BleSdkDemoProTheme
+import com.qingniu.blesdkdemopro.ui.widget.SelectUnitItem
 import com.qingniu.blesdkdemopro.ui.widget.TitleBar
 
 class UnitSelectActivity : ComponentActivity() {
@@ -65,35 +66,35 @@ class UnitSelectActivity : ComponentActivity() {
                                 text = "Weight Unit", fontSize = 16.sp,
                                 modifier = Modifier.padding(start = 10.dp, bottom = 10.dp)
                             )
-                            UnitItem(unit = DemoUnit.KG.showName, checkState = { weightUnit.value == DemoUnit.KG.showName }) {
+                            SelectUnitItem(unit = DemoUnit.KG.showName, checkState = { weightUnit.value == DemoUnit.KG.showName }) {
                                 val unit = dao.getUnitSetting().apply {
                                     this.weightUnit = DemoUnit.KG.showName
                                 }
                                 dao.update(unit)
                                 weightUnit.value = unit.weightUnit
                             }
-                            UnitItem(unit = DemoUnit.LB.showName, checkState = { weightUnit.value == DemoUnit.LB.showName }) {
+                            SelectUnitItem(unit = DemoUnit.LB.showName, checkState = { weightUnit.value == DemoUnit.LB.showName }) {
                                 val unit = dao.getUnitSetting().apply {
                                     this.weightUnit = DemoUnit.LB.showName
                                 }
                                 dao.update(unit)
                                 weightUnit.value = unit.weightUnit
                             }
-                            UnitItem(unit = DemoUnit.ST_LB.showName, checkState = { weightUnit.value == DemoUnit.ST_LB.showName }) {
+                            SelectUnitItem(unit = DemoUnit.ST_LB.showName, checkState = { weightUnit.value == DemoUnit.ST_LB.showName }) {
                                 val unit = dao.getUnitSetting().apply {
                                     this.weightUnit = DemoUnit.ST_LB.showName
                                 }
                                 dao.update(unit)
                                 weightUnit.value = unit.weightUnit
                             }
-                            UnitItem(unit = DemoUnit.ST.showName, checkState = { weightUnit.value == DemoUnit.ST.showName }) {
+                            SelectUnitItem(unit = DemoUnit.ST.showName, checkState = { weightUnit.value == DemoUnit.ST.showName }) {
                                 val unit = dao.getUnitSetting().apply {
                                     this.weightUnit = DemoUnit.ST.showName
                                 }
                                 dao.update(unit)
                                 weightUnit.value = unit.weightUnit
                             }
-                            UnitItem(unit = DemoUnit.JIN.showName, checkState = { weightUnit.value == DemoUnit.JIN.showName }) {
+                            SelectUnitItem(unit = DemoUnit.JIN.showName, checkState = { weightUnit.value == DemoUnit.JIN.showName }) {
                                 val unit = dao.getUnitSetting().apply {
                                     this.weightUnit = DemoUnit.JIN.showName
                                 }
@@ -106,14 +107,14 @@ class UnitSelectActivity : ComponentActivity() {
                                 text = "Length Unit", fontSize = 16.sp,
                                 modifier = Modifier.padding(start = 10.dp, bottom = 10.dp)
                             )
-                            UnitItem(unit = DemoUnit.CM.showName, checkState = { lengthUnit.value == DemoUnit.CM.showName }) {
+                            SelectUnitItem(unit = DemoUnit.CM.showName, checkState = { lengthUnit.value == DemoUnit.CM.showName }) {
                                 val unit = dao.getUnitSetting().apply {
                                     this.lengthUnit = DemoUnit.CM.showName
                                 }
                                 dao.update(unit)
                                 lengthUnit.value = unit.lengthUnit
                             }
-                            UnitItem(unit = DemoUnit.FT_IN.showName, checkState = { lengthUnit.value == DemoUnit.FT_IN.showName }) {
+                            SelectUnitItem(unit = DemoUnit.FT_IN.showName, checkState = { lengthUnit.value == DemoUnit.FT_IN.showName }) {
                                 val unit = dao.getUnitSetting().apply {
                                     this.lengthUnit = DemoUnit.FT_IN.showName
                                 }
@@ -124,50 +125,6 @@ class UnitSelectActivity : ComponentActivity() {
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun UnitItem(
-    unit: String,
-    showDivider: Boolean = true,
-    checkState: () -> Boolean,
-    clickAction: () -> Unit
-) {
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .background(Color.White)
-            .clickable {
-                clickAction.invoke()
-            }
-    ) {
-        if (showDivider) {
-            Divider(
-                color = DividerGrey,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .height(1.dp)
-                    .fillMaxWidth()
-            )
-        }
-        Text(
-            text = unit,
-            Modifier
-                .padding(10.dp, 10.dp, 0.dp, 10.dp)
-                .align(Alignment.CenterStart),
-            fontSize = 16.sp
-        )
-        if (checkState.invoke()) {
-            Icon(
-                imageVector = Icons.Sharp.Check,
-                contentDescription = "",
-                Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 10.dp)
-            )
         }
     }
 }

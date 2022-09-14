@@ -40,6 +40,11 @@
         android:theme="@style/Theme.BleSdkDemoPro"
         tools:targetApi="31">
         <activity
+            android:name=".UserSettingActivity"
+            android:exported="false"
+            android:label="@string/title_activity_user_setting"
+            android:theme="@style/Theme.BleSdkDemoPro" />
+        <activity
             android:name=".HeightMeasureActivity"
             android:exported="false"
             android:label="@string/title_activity_height_measure"
