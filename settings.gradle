@@ -34,6 +34,10 @@ if (USE_BLE_TYPE as int == 0) {
     include ':blecenter'
     project(":blecenter").projectDir = new File(rootProject.projectDir, '../BleLibPro/blecenter')
 
+    //算法库
+    include ':qnalgorithmplugin'
+    project(":qnalgorithmplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnalgorithmplugin')
+
     //身高体重秤
     include ':qnheightweightscaleplugin'
     project(":qnheightweightscaleplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnheightweightscaleplugin')

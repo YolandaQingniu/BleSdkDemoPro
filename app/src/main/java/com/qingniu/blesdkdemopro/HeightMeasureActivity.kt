@@ -41,6 +41,8 @@ import com.qingniu.qnheightweightscaleplugin.listener.QNHeightWeightScaleStatusL
 import com.qingniu.qnheightweightscaleplugin.model.*
 import com.qingniu.qnplugin.QNPlugin
 import com.qingniu.qnplugin.inter.QNScanListener
+import com.qingniu.qnplugin.model.QNHeightUnit
+import com.qingniu.qnplugin.model.QNWeightUnit
 
 class HeightMeasureActivity : ComponentActivity() {
 
@@ -216,17 +218,17 @@ class HeightMeasureActivity : ComponentActivity() {
                         .unitSettingDao().getUnitSetting().lengthUnit
 
                     operate.heightUnit = when (curLengthUnit) {
-                        DemoUnit.CM.showName -> QNHeightUnit.QNHeightUnitCm
-                        DemoUnit.FT_IN.showName -> QNHeightUnit.QNHeightUnitFtIn
-                        else -> QNHeightUnit.QNHeightUnitCm
+                        DemoUnit.CM.showName -> QNHeightUnit.UNIT_CM
+                        DemoUnit.FT_IN.showName -> QNHeightUnit.UNIT_FT_IN
+                        else -> QNHeightUnit.UNIT_CM
                     }
                     operate.weightUnit = when (curWeightUnit) {
-                        DemoUnit.KG.showName -> QNWeightUnit.QNWeightUnitKg
-                        DemoUnit.LB.showName -> QNWeightUnit.QNWeightUnitLb
-                        DemoUnit.ST_LB.showName -> QNWeightUnit.QNWeightUnitStLb
-                        DemoUnit.ST.showName -> QNWeightUnit.QNWeightUnitSt
-                        DemoUnit.JIN.showName -> QNWeightUnit.QNWeightUnitJin
-                        else -> QNWeightUnit.QNWeightUnitKg
+                        DemoUnit.KG.showName -> QNWeightUnit.UNIT_KG
+                        DemoUnit.LB.showName -> QNWeightUnit.UNIT_LB
+                        DemoUnit.ST_LB.showName -> QNWeightUnit.UNIT_ST_LB
+                        DemoUnit.ST.showName -> QNWeightUnit.UNIT_ST
+                        DemoUnit.JIN.showName -> QNWeightUnit.UNIT_JIN
+                        else -> QNWeightUnit.UNIT_KG
                     }
                     QNHeightWeightScalePlugin.connectHeightWeightScaleDevice(it, operate)
                 }
