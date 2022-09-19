@@ -95,7 +95,18 @@ class HeightMeasureActivity : ComponentActivity() {
         }
     }
 
-    private fun createWeightStr(weight: String):String{
+    private fun createPercentageIndicatorStr(rate: String?): String {
+        return if (TextUtils.isEmpty(rate)) {
+            ""
+        } else {
+            "$rate %"
+        }
+    }
+
+    private fun createWeightIndicatorStr(weight: String?):String{
+        if (TextUtils.isEmpty(weight)) {
+            return ""
+        }
         val curWeightUnit = DemoDataBase.getInstance(this@HeightMeasureActivity)
             .unitSettingDao().getUnitSetting().weightUnit
         return when (curWeightUnit) {
@@ -129,6 +140,9 @@ class HeightMeasureActivity : ComponentActivity() {
 
         QNHeightWeightScalePlugin.setStatusListener(object : QNHeightWeightScaleStatusListener {
             override fun onDiscoverScaleDevice(device: QNHeightWeightScaleDevice) {
+                if (device.mac != "44:17:93:85:16:E6") {
+                    return
+                }
                 qnHeightWeightScaleDevice = device
                 QNPlugin.getInstance(this@HeightMeasureActivity).stopScan()
             }
@@ -165,7 +179,7 @@ class HeightMeasureActivity : ComponentActivity() {
             ) {
                 Log.e("qzx", "onHeightWeightScaleRealTimeWeight, weight = $weight")
                 mHeightScaleViewModel.apply {
-                    this.weightStr.value = createWeightStr(weight)
+                    this.weightStr.value = createWeightIndicatorStr(weight)
                     this.vState.value = HeightScaleViewModel.MeasureState.MEASURE_WEIGHT
                 }
             }
@@ -202,9 +216,33 @@ class HeightMeasureActivity : ComponentActivity() {
                 scaleData.makeDataComplete(QNHeightWeightUser("001", gender, age))
 
                 mHeightScaleViewModel.apply {
-                    this.weightStr.value = createWeightStr(scaleData.weight)
+                    this.weightStr.value = createWeightIndicatorStr(scaleData.weight)
                     this.heightStr.value = createHeightStr(scaleData.height)
-                    this.bmi.value = scaleData.bmi
+                    this.bmi.value = scaleData.bmi ?: ""
+                    this.bodyFatRate.value = createPercentageIndicatorStr(scaleData.bodyFatRate)
+                    this.subcutaneousFatRate.value = createPercentageIndicatorStr(scaleData.subcutaneousFatRate)
+                    this.visceralFatLevel.value = scaleData.visceralFatLevel ?: ""
+                    this.bodyWaterRate.value = createPercentageIndicatorStr(scaleData.bodyWaterRate)
+                    this.skeletalMuscleRate.value = createPercentageIndicatorStr(scaleData.skeletalMuscleRate)
+                    this.boneMass.value = createWeightIndicatorStr(scaleData.boneMass)
+                    this.bmr.value = scaleData.bmr ?: ""
+                    this.bodyType.value = scaleData.bodyType ?: ""
+                    this.proteinRate.value = createPercentageIndicatorStr(scaleData.proteinRate)
+                    this.leanBodyMass.value = createWeightIndicatorStr(scaleData.leanBodyMass)
+                    this.muscleMass.value = createWeightIndicatorStr(scaleData.muscleMass)
+                    this.bodyAge.value = scaleData.bodyAge ?: ""
+                    this.healthScore.value = scaleData.healthScore ?: ""
+                    this.fattyLiverRiskLevel.value = scaleData.fattyLiverRiskLevel ?: ""
+                    this.obesity.value = createPercentageIndicatorStr(scaleData.obesity)
+                    this.bodyWaterMass.value = createWeightIndicatorStr(scaleData.bodyWaterMass)
+                    this.proteinMass.value = createWeightIndicatorStr(scaleData.proteinMass)
+                    this.mineralLevel.value = scaleData.mineralLevel ?: ""
+                    this.dreamWeight.value = createWeightIndicatorStr(scaleData.dreamWeight)
+                    this.standWeight.value = createWeightIndicatorStr(scaleData.standWeight)
+                    this.weightControl.value = createWeightIndicatorStr(scaleData.weightControl)
+                    this.bodyFatControl.value = createWeightIndicatorStr(scaleData.bodyFatControl)
+                    this.muscleMassControl.value = createWeightIndicatorStr(scaleData.muscleMassControl)
+                    this.muscleRate.value = createPercentageIndicatorStr(scaleData.muscleRate)
                     this.vState.value = HeightScaleViewModel.MeasureState.MEASURE_END
                 }
             }
@@ -356,6 +394,84 @@ fun MeasureBoard() {
                 Indicator("weight", cWeightStr, false)
                 Indicator("height", cHeightStr, false)
                 Indicator("bmi", cBmi, true)
+                if (!TextUtils.isEmpty(hsvm.bodyFatRate.value)) {
+                    Indicator("bodyFatRate", hsvm.bodyFatRate.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.subcutaneousFatRate.value)) {
+                    Indicator("subcutaneousFatRate", hsvm.subcutaneousFatRate.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.visceralFatLevel.value)) {
+                    Indicator("visceralFatLevel", hsvm.visceralFatLevel.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.bodyWaterRate.value)) {
+                    Indicator("bodyWaterRate", hsvm.bodyWaterRate.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.skeletalMuscleRate.value)) {
+                    Indicator("skeletalMuscleRate", hsvm.skeletalMuscleRate.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.boneMass.value)) {
+                    Indicator("boneMass", hsvm.boneMass.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.bmr.value)) {
+                    Indicator("bmr", hsvm.bmr.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.bodyType.value)) {
+                    Indicator("bodyType", hsvm.bodyType.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.proteinRate.value)) {
+                    Indicator("proteinRate", hsvm.proteinRate.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.leanBodyMass.value)) {
+                    Indicator("leanBodyMass", hsvm.leanBodyMass.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.muscleMass.value)) {
+                    Indicator("muscleMass", hsvm.muscleMass.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.bodyAge.value)) {
+                    Indicator("bodyAge", hsvm.bodyAge.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.healthScore.value)) {
+                    Indicator("healthScore", hsvm.healthScore.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.fattyLiverRiskLevel.value)) {
+                    Indicator("fattyLiverRiskLevel", hsvm.fattyLiverRiskLevel.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.bodyFatMass.value)) {
+                    Indicator("bodyFatMass", hsvm.bodyFatMass.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.obesity.value)) {
+                    Indicator("obesity", hsvm.obesity.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.bodyWaterMass.value)) {
+                    Indicator("bodyWaterMass", hsvm.bodyWaterMass.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.proteinMass.value)) {
+                    Indicator("proteinMass", hsvm.proteinMass.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.mineralLevel.value)) {
+                    Indicator("mineralLevel", hsvm.mineralLevel.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.bodyFatMass.value)) {
+                    Indicator("bodyFatMass", hsvm.bodyFatMass.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.dreamWeight.value)) {
+                    Indicator("dreamWeight", hsvm.dreamWeight.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.standWeight.value)) {
+                    Indicator("standWeight", hsvm.standWeight.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.weightControl.value)) {
+                    Indicator("weightControl", hsvm.weightControl.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.bodyFatControl.value)) {
+                    Indicator("bodyFatControl", hsvm.bodyFatControl.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.muscleMassControl.value)) {
+                    Indicator("muscleMassControl", hsvm.muscleMassControl.value, true)
+                }
+                if (!TextUtils.isEmpty(hsvm.muscleRate.value)) {
+                    Indicator("muscleRate", hsvm.muscleRate.value, true)
+                }
             }
         }
     }
@@ -416,5 +532,30 @@ class HeightScaleViewModel : ViewModel() {
     var weightStr: MutableState<String> = mutableStateOf("--")
     var heightStr: MutableState<String> = mutableStateOf("--")
     var bmi: MutableState<String> = mutableStateOf("")
+    var bodyFatRate: MutableState<String> = mutableStateOf("")
+    var subcutaneousFatRate: MutableState<String> = mutableStateOf("")
+    var visceralFatLevel: MutableState<String> = mutableStateOf("")
+    var bodyWaterRate: MutableState<String> = mutableStateOf("")
+    var skeletalMuscleRate: MutableState<String> = mutableStateOf("")
+    var boneMass: MutableState<String> = mutableStateOf("")
+    var bmr: MutableState<String> = mutableStateOf("")
+    var bodyType: MutableState<String> = mutableStateOf("")
+    var proteinRate: MutableState<String> = mutableStateOf("")
+    var leanBodyMass: MutableState<String> = mutableStateOf("")
+    var muscleMass: MutableState<String> = mutableStateOf("")
+    var bodyAge: MutableState<String> = mutableStateOf("")
+    var healthScore: MutableState<String> = mutableStateOf("")
+    var fattyLiverRiskLevel: MutableState<String> = mutableStateOf("")
+    var bodyFatMass: MutableState<String> = mutableStateOf("")
+    var obesity: MutableState<String> = mutableStateOf("")
+    var bodyWaterMass: MutableState<String> = mutableStateOf("")
+    var proteinMass: MutableState<String> = mutableStateOf("")
+    var mineralLevel: MutableState<String> = mutableStateOf("")
+    var dreamWeight: MutableState<String> = mutableStateOf("")
+    var standWeight: MutableState<String> = mutableStateOf("")
+    var weightControl: MutableState<String> = mutableStateOf("")
+    var bodyFatControl: MutableState<String> = mutableStateOf("")
+    var muscleMassControl: MutableState<String> = mutableStateOf("")
+    var muscleRate: MutableState<String> = mutableStateOf("")
     var vState: MutableState<MeasureState> = mutableStateOf(MeasureState.DISCONNECT)
 }
