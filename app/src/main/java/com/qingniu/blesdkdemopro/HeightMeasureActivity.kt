@@ -163,9 +163,10 @@ class HeightMeasureActivity : ComponentActivity() {
             }
 
             override fun onHeightWeightScaleReadyInteractResult(
+                code: Int,
                 device: QNHeightWeightScaleDevice?
             ) {
-                Log.e("qzx", "onHeightWeightScaleReadyInteractResult")
+                Log.e("qzx", "onHeightWeightScaleReadyInteractResult, code = $code")
             }
 
             override fun onHeightWeightScaleDisconnected(device: QNHeightWeightScaleDevice?) {
