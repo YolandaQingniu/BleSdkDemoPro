@@ -108,14 +108,16 @@ dependencies {
         implementation project(':qnpluginX')
         implementation project(':qnheightweightscalepluginX')
         implementation project(':qnalgorithmpluginX')
+        implementation project(':qnrulerpluginX')
     } else if (USE_BLE_TYPE as int == 1) {
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnpluginX:1.1.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnheightweightscalepluginX:1.1.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnalgorithmpluginX:1.1.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnpluginX:1.2.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnheightweightscalepluginX:1.2.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnalgorithmpluginX:1.2.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnrulerpluginX:1.2.0"
     } else if (USE_BLE_TYPE as int == 2) {
         implementation project(':qnplugin')
         implementation project(':qnheightweightscaleplugin')
-        implementation project(':qnrulerplugin')
         implementation project(':qnalgorithmplugin')
+        implementation project(':qnrulerplugin')
     }
 }

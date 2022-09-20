@@ -46,7 +46,7 @@ import com.qingniu.qnheightweightscaleplugin.model.QNHeightWeightUser
 import com.qingniu.qnplugin.QNPlugin
 import com.qingniu.qnplugin.inter.QNScanListener
 import com.qingniu.qnplugin.model.QNGender
-import com.qingniu.qnplugin.model.QNHeightUnit
+import com.qingniu.qnplugin.model.QNLengthUnit
 import com.qingniu.qnplugin.model.QNWeightUnit
 
 class HeightMeasureActivity : ComponentActivity() {
@@ -283,9 +283,9 @@ class HeightMeasureActivity : ComponentActivity() {
                         .unitSettingDao().getUnitSetting().lengthUnit
 
                     operate.heightUnit = when (curLengthUnit) {
-                        DemoUnit.CM.showName -> QNHeightUnit.UNIT_CM
-                        DemoUnit.FT_IN.showName -> QNHeightUnit.UNIT_FT_IN
-                        else -> QNHeightUnit.UNIT_CM
+                        DemoUnit.CM.showName -> QNLengthUnit.UNIT_CM
+                        DemoUnit.FT_IN.showName -> QNLengthUnit.UNIT_FT_IN
+                        else -> QNLengthUnit.UNIT_CM
                     }
                     operate.weightUnit = when (curWeightUnit) {
                         DemoUnit.KG.showName -> QNWeightUnit.UNIT_KG

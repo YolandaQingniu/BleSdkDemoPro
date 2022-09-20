@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.qingniu.blecenter.constant.LengthEnum
 import com.qingniu.blesdkdemopro.ui.theme.BgGrey
 import com.qingniu.blesdkdemopro.ui.theme.BleSdkDemoProTheme
 import com.qingniu.blesdkdemopro.ui.theme.DividerGrey
@@ -34,6 +33,7 @@ import com.qingniu.blesdkdemopro.ui.theme.TipGrey
 import com.qingniu.blesdkdemopro.ui.widget.TitleBar
 import com.qingniu.blesdkdemopro.util.DemoBleUtils
 import com.qingniu.qnplugin.QNPlugin
+import com.qingniu.qnplugin.model.QNLengthUnit
 import com.qingniu.qnrulerplugin.QNRulerPlugin
 import com.qingniu.qnrulerplugin.listener.QNRulerDataListener
 import com.qingniu.qnrulerplugin.listener.QNRulerDeviceListener
@@ -69,7 +69,7 @@ class TapeMeasureActivity : ComponentActivity() {
                             .fillMaxSize()
                             .background(BgGrey)
                     ) {
-                        TitleBar("Tape Scale", true)
+                        TitleBar("Ruler", false)
                         TapeStatusBar()
                         TapeMeasureBoard()
                     }
@@ -142,15 +142,12 @@ class TapeMeasureActivity : ComponentActivity() {
     }
 }
 
-fun createTapeLengthStr(length: Double, unit: LengthEnum): String{
+fun createTapeLengthStr(length: Double, unit: QNLengthUnit): String{
     when(unit){
-        LengthEnum.UNIT_CM -> {
+        QNLengthUnit.UNIT_CM -> {
             return "$length cm"
         }
-        LengthEnum.UNIT_FT_IN -> {
-            return "$length in"
-        }
-        LengthEnum.UNIT_IN -> {
+        QNLengthUnit.UNIT_IN -> {
             return "$length cm"
         }
         else ->{

@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                             }
-                            Card(Modifier.clickable {
+                            Card(Modifier.padding(top = 20.dp).clickable {
                                 ctx.startActivity(TapeMeasureActivity.getCallIntent(ctx))
                             }) {
                                 Box(
@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = "Tape Scale",
+                                        text = "Ruler",
                                         textAlign = TextAlign.Center,
                                     )
                                 }

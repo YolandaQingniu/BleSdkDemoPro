@@ -2,8 +2,6 @@ plugins {
     id 'com.android.library'
 }
 
-apply from: "../gradle/publish.gradle"
-
 android {
     compileSdk 32
 
@@ -25,18 +23,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
-    }
 }
 
 dependencies {
 
     implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
-    api files('libs/qnplugin-1.2.0.jar')
+    api files('libs/qnrulerplugin-1.2.0.jar')
 
     implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'com.google.android.material:material:1.6.1'
