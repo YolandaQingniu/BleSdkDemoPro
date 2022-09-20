@@ -11,6 +11,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -390,89 +391,93 @@ fun MeasureBoard() {
                 .padding(top = 10.dp, bottom = 10.dp)
         )
         if (cvState == HeightScaleViewModel.MeasureState.MEASURE_END || !(TextUtils.isEmpty(cBmi))) {
-            Column {
-                Indicator("weight", cWeightStr, false)
-                Indicator("height", cHeightStr, false)
-                Indicator("bmi", cBmi, true)
-                if (!TextUtils.isEmpty(hsvm.bodyFatRate.value)) {
-                    Indicator("bodyFatRate", hsvm.bodyFatRate.value, true)
+            LazyColumn(content = {
+                item {
+                    Column {
+                        Indicator("weight", cWeightStr, false)
+                        Indicator("height", cHeightStr, false)
+                        Indicator("bmi", cBmi, true)
+                        if (!TextUtils.isEmpty(hsvm.bodyFatRate.value)) {
+                            Indicator("bodyFatRate", hsvm.bodyFatRate.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.subcutaneousFatRate.value)) {
+                            Indicator("subcutaneousFatRate", hsvm.subcutaneousFatRate.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.visceralFatLevel.value)) {
+                            Indicator("visceralFatLevel", hsvm.visceralFatLevel.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.bodyWaterRate.value)) {
+                            Indicator("bodyWaterRate", hsvm.bodyWaterRate.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.skeletalMuscleRate.value)) {
+                            Indicator("skeletalMuscleRate", hsvm.skeletalMuscleRate.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.boneMass.value)) {
+                            Indicator("boneMass", hsvm.boneMass.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.bmr.value)) {
+                            Indicator("bmr", hsvm.bmr.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.bodyType.value)) {
+                            Indicator("bodyType", hsvm.bodyType.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.proteinRate.value)) {
+                            Indicator("proteinRate", hsvm.proteinRate.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.leanBodyMass.value)) {
+                            Indicator("leanBodyMass", hsvm.leanBodyMass.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.muscleMass.value)) {
+                            Indicator("muscleMass", hsvm.muscleMass.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.bodyAge.value)) {
+                            Indicator("bodyAge", hsvm.bodyAge.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.healthScore.value)) {
+                            Indicator("healthScore", hsvm.healthScore.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.fattyLiverRiskLevel.value)) {
+                            Indicator("fattyLiverRiskLevel", hsvm.fattyLiverRiskLevel.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.bodyFatMass.value)) {
+                            Indicator("bodyFatMass", hsvm.bodyFatMass.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.obesity.value)) {
+                            Indicator("obesity", hsvm.obesity.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.bodyWaterMass.value)) {
+                            Indicator("bodyWaterMass", hsvm.bodyWaterMass.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.proteinMass.value)) {
+                            Indicator("proteinMass", hsvm.proteinMass.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.mineralLevel.value)) {
+                            Indicator("mineralLevel", hsvm.mineralLevel.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.bodyFatMass.value)) {
+                            Indicator("bodyFatMass", hsvm.bodyFatMass.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.dreamWeight.value)) {
+                            Indicator("dreamWeight", hsvm.dreamWeight.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.standWeight.value)) {
+                            Indicator("standWeight", hsvm.standWeight.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.weightControl.value)) {
+                            Indicator("weightControl", hsvm.weightControl.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.bodyFatControl.value)) {
+                            Indicator("bodyFatControl", hsvm.bodyFatControl.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.muscleMassControl.value)) {
+                            Indicator("muscleMassControl", hsvm.muscleMassControl.value, true)
+                        }
+                        if (!TextUtils.isEmpty(hsvm.muscleRate.value)) {
+                            Indicator("muscleRate", hsvm.muscleRate.value, true)
+                        }
+                    }
                 }
-                if (!TextUtils.isEmpty(hsvm.subcutaneousFatRate.value)) {
-                    Indicator("subcutaneousFatRate", hsvm.subcutaneousFatRate.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.visceralFatLevel.value)) {
-                    Indicator("visceralFatLevel", hsvm.visceralFatLevel.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.bodyWaterRate.value)) {
-                    Indicator("bodyWaterRate", hsvm.bodyWaterRate.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.skeletalMuscleRate.value)) {
-                    Indicator("skeletalMuscleRate", hsvm.skeletalMuscleRate.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.boneMass.value)) {
-                    Indicator("boneMass", hsvm.boneMass.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.bmr.value)) {
-                    Indicator("bmr", hsvm.bmr.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.bodyType.value)) {
-                    Indicator("bodyType", hsvm.bodyType.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.proteinRate.value)) {
-                    Indicator("proteinRate", hsvm.proteinRate.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.leanBodyMass.value)) {
-                    Indicator("leanBodyMass", hsvm.leanBodyMass.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.muscleMass.value)) {
-                    Indicator("muscleMass", hsvm.muscleMass.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.bodyAge.value)) {
-                    Indicator("bodyAge", hsvm.bodyAge.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.healthScore.value)) {
-                    Indicator("healthScore", hsvm.healthScore.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.fattyLiverRiskLevel.value)) {
-                    Indicator("fattyLiverRiskLevel", hsvm.fattyLiverRiskLevel.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.bodyFatMass.value)) {
-                    Indicator("bodyFatMass", hsvm.bodyFatMass.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.obesity.value)) {
-                    Indicator("obesity", hsvm.obesity.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.bodyWaterMass.value)) {
-                    Indicator("bodyWaterMass", hsvm.bodyWaterMass.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.proteinMass.value)) {
-                    Indicator("proteinMass", hsvm.proteinMass.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.mineralLevel.value)) {
-                    Indicator("mineralLevel", hsvm.mineralLevel.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.bodyFatMass.value)) {
-                    Indicator("bodyFatMass", hsvm.bodyFatMass.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.dreamWeight.value)) {
-                    Indicator("dreamWeight", hsvm.dreamWeight.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.standWeight.value)) {
-                    Indicator("standWeight", hsvm.standWeight.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.weightControl.value)) {
-                    Indicator("weightControl", hsvm.weightControl.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.bodyFatControl.value)) {
-                    Indicator("bodyFatControl", hsvm.bodyFatControl.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.muscleMassControl.value)) {
-                    Indicator("muscleMassControl", hsvm.muscleMassControl.value, true)
-                }
-                if (!TextUtils.isEmpty(hsvm.muscleRate.value)) {
-                    Indicator("muscleRate", hsvm.muscleRate.value, true)
-                }
-            }
+            })
         }
     }
 }
