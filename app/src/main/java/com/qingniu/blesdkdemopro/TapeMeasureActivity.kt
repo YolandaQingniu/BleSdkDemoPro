@@ -148,7 +148,7 @@ fun createTapeLengthStr(length: Double, unit: QNLengthUnit): String{
             return "$length cm"
         }
         QNLengthUnit.UNIT_IN -> {
-            return "$length cm"
+            return "$length inch"
         }
         else ->{
             return "$length cm"
@@ -239,7 +239,7 @@ fun TapeMeasureBoard() {
         )
         if (cvState == TapeViewModel.MeasureState.MEASURE_END) {
             Column {
-                TapeIndicator("height", cHeightStr, false)
+                TapeIndicator("length", cHeightStr, false)
             }
         }
     }
