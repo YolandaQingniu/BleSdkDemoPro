@@ -3,5 +3,6 @@
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_unit_select">UnitSelectActivity</string>
     <string name="title_activity_height_measure">HeightMeasureActivity</string>
+    <string name="title_activity_tape_measure">TapeMeasureActivity</string>
     <string name="title_activity_user_setting">UserSettingActivity</string>
 </resources>

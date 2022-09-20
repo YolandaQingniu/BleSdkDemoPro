@@ -43,4 +43,10 @@ if (USE_BLE_TYPE as int == 0) {
     project(":qnheightweightscaleplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnheightweightscaleplugin')
     include ':heightscale'
     project(":heightscale").projectDir = new File(rootProject.projectDir, '../BleLibPro/heightscale')
+
+    //围度尺
+    include ':qnrulerplugin'
+    project(":qnrulerplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnrulerplugin')
+    include ':tape'
+    project(":tape").projectDir = new File(rootProject.projectDir, '../BleLibPro/tape')
 }

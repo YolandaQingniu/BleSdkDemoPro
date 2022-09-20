@@ -52,6 +52,21 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                             }
+                            Card(Modifier.clickable {
+                                ctx.startActivity(TapeMeasureActivity.getCallIntent(ctx))
+                            }) {
+                                Box(
+                                    Modifier
+                                        .width(200.dp)
+                                        .height(40.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Tape Scale",
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+                            }
                         }
                     }
                 }

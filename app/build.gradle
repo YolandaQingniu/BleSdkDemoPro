@@ -113,5 +113,6 @@ dependencies {
     } else if (USE_BLE_TYPE as int == 2) {
         implementation project(':qnplugin')
         implementation project(':qnheightweightscaleplugin')
+        implementation project(':qnrulerplugin')
     }
 }
