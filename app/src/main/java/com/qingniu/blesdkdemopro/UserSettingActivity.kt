@@ -60,12 +60,12 @@ class UserSettingActivity : ComponentActivity() {
                             .background(BgGrey)
                             .fillMaxSize()
                     ) {
-                        TitleBar(title = "Age")
+                        TitleBar(title = "User Setting")
                         Column(
                             Modifier.padding(top = 20.dp)
                         ) {
                             Text(
-                                text = "Weight Unit", fontSize = 16.sp,
+                                text = "Age", fontSize = 16.sp,
                                 modifier = Modifier.padding(start = 10.dp, bottom = 10.dp)
                             )
                             TextField(value = age.value.toString(), onValueChange = {
