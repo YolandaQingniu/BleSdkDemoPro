@@ -25,6 +25,13 @@
 https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
 
 
+### ProGuard
+
+
+```
+-keep class com.qingniu.scale.model.BleScaleData{*;}
+```
+
 
 ### Download
 
@@ -36,13 +43,6 @@ allprojects {
 		maven { url 'https://jitpack.io' }
 	}
 }
-```
-
-### ProGuard
-
-
-```
--keep class com.qingniu.scale.model.BleScaleData{*;}
 ```
 
 
