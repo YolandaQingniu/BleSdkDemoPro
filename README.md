@@ -48,16 +48,16 @@ allprojects {
 
 Core Plugin (necessary):
 
-implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnpluginX:1.1.0"
+>implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnpluginX:1.1.0"
 
 Algorithm Plugin (scale need):
 
-implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnalgorithmpluginX:1.1.0"
+>implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnalgorithmpluginX:1.1.0"
 
 HeightWeightScale Plugin:
 
-implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnheightweightscalepluginX:1.1.0"
+>implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnheightweightscalepluginX:1.1.0"
 
 Ruler Plugin:
 
-implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnrulerpluginX:1.1.0"
+>implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnrulerpluginX:1.1.0"
