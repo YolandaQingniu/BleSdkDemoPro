@@ -141,9 +141,6 @@ class HeightMeasureActivity : ComponentActivity() {
 
         QNHeightWeightScalePlugin.setStatusListener(object : QNHeightWeightScaleStatusListener {
             override fun onDiscoverScaleDevice(device: QNHeightWeightScaleDevice) {
-                if (device.mac != "44:17:93:85:16:E6") {
-                    return
-                }
                 qnHeightWeightScaleDevice = device
                 QNPlugin.getInstance(this@HeightMeasureActivity).stopScan()
             }
