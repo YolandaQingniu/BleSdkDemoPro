@@ -102,6 +102,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
     // optional - Test helpers
     testImplementation("androidx.room:room-testing:$room_version")
+    implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.0.0@aar")
 
 
     if (USE_BLE_TYPE as int == 0) {
@@ -119,5 +120,6 @@ dependencies {
         implementation project(':qnheightweightscaleplugin')
         implementation project(':qnalgorithmplugin')
         implementation project(':qnrulerplugin')
+        implementation project(':qnscaleplugin')
     }
 }

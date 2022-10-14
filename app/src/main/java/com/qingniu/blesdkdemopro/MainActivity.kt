@@ -67,6 +67,22 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                             }
+
+                            Card(Modifier.padding(top = 20.dp).clickable {
+                                ctx.startActivity(QNScaleMeasureActivity.getCallIntent(ctx))
+                            }) {
+                                Box(
+                                    Modifier
+                                        .width(200.dp)
+                                        .height(40.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "QNScale",
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+                            }
                         }
                     }
                 }

@@ -41,6 +41,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BleSdkDemoPro"
         tools:replace="android:theme"
+        android:testOnly="false"
         tools:targetApi="31">
         <activity
             android:name=".UserSettingActivity"
@@ -56,6 +57,16 @@
             android:name=".TapeMeasureActivity"
             android:exported="false"
             android:label="@string/title_activity_tape_measure"
+            android:theme="@style/Theme.BleSdkDemoPro" />
+        <activity
+            android:name=".QNScaleMeasureActivity"
+            android:exported="false"
+            android:label="@string/title_activity_qnscale_measure"
+            android:theme="@style/Theme.BleSdkDemoPro" />
+        <activity
+            android:name=".WifiSettingActivity"
+            android:exported="false"
+            android:label="@string/title_activity_wifi_setting"
             android:theme="@style/Theme.BleSdkDemoPro" />
         <activity
             android:name=".UnitSelectActivity"

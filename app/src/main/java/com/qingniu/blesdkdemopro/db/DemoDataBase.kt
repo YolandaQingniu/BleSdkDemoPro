@@ -6,18 +6,21 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.qingniu.blesdkdemopro.db.dao.UnitSettingDao
 import com.qingniu.blesdkdemopro.db.dao.UserDao
+import com.qingniu.blesdkdemopro.db.dao.WifiInfoDao
 import com.qingniu.blesdkdemopro.db.table.UnitSetting
 import com.qingniu.blesdkdemopro.db.table.User
+import com.qingniu.blesdkdemopro.db.table.WifiInfo
 
 /**
  * @Author: hyr
  * @Date: 2022/8/14 20:42
  * @Description:
  */
-@Database(entities = [UnitSetting::class, User::class], version = 1)
+@Database(entities = [UnitSetting::class, User::class, WifiInfo::class], version = 2)
 abstract class DemoDataBase : RoomDatabase() {
     abstract fun unitSettingDao(): UnitSettingDao
     abstract fun userDao(): UserDao
+    abstract fun wifiInfoDao(): WifiInfoDao
 
     companion object {
         @Volatile
@@ -41,8 +44,15 @@ abstract class DemoDataBase : RoomDatabase() {
                                 age = 30
                             }
 
+                            val defaultWifiInfo = WifiInfo().apply {
+                                ssid = "yolanda-qzx"
+                                password = "66666666"
+                                serverUrl = "http://wifi.yolanda.hk:80/wifi_api/wsps?device_type=7&code="
+                            }
+
                             sInstance!!.unitSettingDao().insert(defaultUnit)
                             sInstance!!.userDao().insert(defaultUser)
+                            sInstance!!.wifiInfoDao().insert(defaultWifiInfo)
                         }
                     }
                 }
@@ -56,6 +66,7 @@ abstract class DemoDataBase : RoomDatabase() {
                 DemoDataBase::class.java,
                 DATA_BASE_NAME)
                 .allowMainThreadQueries()//todo hyr 后续需移除主线程操作数据库 目前临时调试
+                .fallbackToDestructiveMigration()
                 .build()
         }
     }

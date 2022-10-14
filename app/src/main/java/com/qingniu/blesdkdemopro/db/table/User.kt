@@ -19,4 +19,5 @@ class User {
 
     @ColumnInfo(name = "age", defaultValue = "30")
     var age: Int = 30
+
 }

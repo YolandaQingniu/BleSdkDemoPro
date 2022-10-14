@@ -19,11 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.qingniu.blesdkdemopro.constant.UserConstant
 import com.qingniu.blesdkdemopro.ui.theme.BgGrey
 import com.qingniu.blesdkdemopro.ui.theme.CT4
 import com.qingniu.blesdkdemopro.ui.theme.DividerGrey
 import com.qingniu.blesdkdemopro.ui.theme.BleSdkDemoProTheme
 import com.qingniu.blesdkdemopro.ui.widget.TitleBar
+import com.qingniu.blesdkdemopro.util.SpUtils
 
 class SettingActivity : ComponentActivity() {
 
@@ -68,8 +71,22 @@ fun Settings() {
             ctx.startActivity(UnitSelectActivity.getCallIntent(ctx))
         }
 
-        SettingItem(text = "User Setting", false) {
+        SettingItem(text = "User Setting", true) {
             ctx.startActivity(UserSettingActivity.getCallIntent(ctx))
+        }
+
+        SettingItem(text = "Wifi Setting", true) {
+            ctx.startActivity(WifiSettingActivity.getCallIntent(ctx))
+        }
+
+        SettingItem(text = "Delete User", false) {
+            val intent = Intent()
+//            intent.action = UserConstant.ACTION_DELETE_INDEX_USER
+//            val index = SpUtils.getIntValue(ctx, SpUtils.USER_INDEX_KEY)
+//            intent.putExtra(UserConstant.DELETE_USER_INDEX, index)
+
+            intent.action = UserConstant.ACTION_DELETE_ALL_USERS
+            LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent)
         }
     }
 }
