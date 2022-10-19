@@ -119,5 +119,6 @@ dependencies {
         implementation project(':qnheightweightscaleplugin')
         implementation project(':qnalgorithmplugin')
         implementation project(':qnrulerplugin')
+        implementation project(':qnscaleplugin')
     }
 }
