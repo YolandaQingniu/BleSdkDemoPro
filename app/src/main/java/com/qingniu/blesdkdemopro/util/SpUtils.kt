@@ -15,8 +15,8 @@ object SpUtils {
     const val USER_SECRET_KEY = "user_secret_key"
     const val USER_IS_VISITOR_KEY = "user_is_visitor_key"
 
-    fun saveValue(context: Context, key: String, value: Any){
-        val editor = context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit()
+    fun saveValue(tableKey: String, context: Context, key: String, value: Any){
+        val editor = context.getSharedPreferences(tableKey, Context.MODE_PRIVATE).edit()
         if(!TextUtils.isEmpty(key) && value != null){
             if(value is String){
                 editor.putString(key, value)
@@ -33,23 +33,23 @@ object SpUtils {
         }
     }
 
-    fun getStringValue(context: Context, key: String): String{
-        val sp = context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+    fun getStringValue(tableKey: String, context: Context, key: String): String{
+        val sp = context.getSharedPreferences(tableKey, Context.MODE_PRIVATE)
         return sp.getString(key, "") ?: ""
     }
 
-    fun getIntValue(context: Context, key: String): Int{
-        val sp = context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+    fun getIntValue(tableKey: String, context: Context, key: String): Int{
+        val sp = context.getSharedPreferences(tableKey, Context.MODE_PRIVATE)
         return sp.getInt(key, 0)
     }
 
-    fun getBooleanValue(context: Context, key: String): Boolean{
-        val sp = context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+    fun getBooleanValue(tableKey: String, context: Context, key: String): Boolean{
+        val sp = context.getSharedPreferences(tableKey, Context.MODE_PRIVATE)
         return sp.getBoolean(key, false)
     }
 
-    fun cleanUserData(context: Context){
-        val editor = context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit()
+    fun cleanUserData(tableKey: String, context: Context){
+        val editor = context.getSharedPreferences(tableKey, Context.MODE_PRIVATE).edit()
         editor.putInt(USER_INDEX_KEY, 0)
         editor.putInt(USER_SECRET_KEY, 0)
         editor.putBoolean(USER_IS_VISITOR_KEY, false)

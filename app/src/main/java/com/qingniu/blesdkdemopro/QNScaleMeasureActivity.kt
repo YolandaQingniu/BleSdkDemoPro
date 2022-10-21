@@ -41,6 +41,7 @@ import com.qingniu.blesdkdemopro.ui.widget.TitleBar
 import com.qingniu.blesdkdemopro.util.DemoBleUtils
 import com.qingniu.blesdkdemopro.util.SpUtils
 import com.qingniu.qnplugin.QNPlugin
+import com.qingniu.qnplugin.model.QNGender
 import com.qingniu.qnplugin.model.QNWeightUnit
 import com.qingniu.qnscaleplugin.QNScalePlugin
 import com.qingniu.qnscaleplugin.QNScaleWiFiMp
@@ -72,7 +73,7 @@ class QNScaleMeasureActivity : ComponentActivity() {
                     // 删除全部用户
                     if(mDevice != null){
                         Log.e(TAG, "删除全部用户")
-                        SpUtils.cleanUserData(this@QNScaleMeasureActivity)
+                        if(mDevice != null) SpUtils.cleanUserData(mDevice!!.mac, this@QNScaleMeasureActivity)
                         QNUserScaleMp.deleteUserList(mDevice, listOf(1, 2, 3, 4, 5, 6, 7, 8))
                     }
                 }
@@ -138,7 +139,11 @@ class QNScaleMeasureActivity : ComponentActivity() {
                             && device?.mac != "F0:FE:6B:CB:8A:C8"
                             && device?.mac != "FF:01:00:00:18:08"
                             && device?.mac != "ED:67:37:11:B3:AC"
-                            && device?.mac != "ED:67:37:27:F0:4D")
+                            && device?.mac != "ED:67:37:27:F0:4D"
+                            && device?.mac != "A1:7C:08:A6:A8:5F"
+                            && device?.mac != "F0:08:D1:B2:F3:CA"
+                            && device?.mac != "C4:DD:57:EC:2F:9A"
+                            && device?.mac != "C7:C7:63:DF:FF:78")
                 ){
                     return
                 }
@@ -148,15 +153,14 @@ class QNScaleMeasureActivity : ComponentActivity() {
                     val curWeightUnit = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
                         .unitSettingDao().getUnitSetting().weightUnit
                     op.unit = when(curWeightUnit) {
-                        DemoUnit.KG.showName -> QNScaleOperate.QNScaleUnit.QNScaleUnitKg
-                        DemoUnit.LB.showName -> QNScaleOperate.QNScaleUnit.QNScaleUnitLb
-                        DemoUnit.ST_LB.showName -> QNScaleOperate.QNScaleUnit.QNScaleUnitStLb
-                        DemoUnit.ST.showName -> QNScaleOperate.QNScaleUnit.QNScaleUnitSt
-                        DemoUnit.JIN.showName -> QNScaleOperate.QNScaleUnit.QNScaleUnitJin
-                        else -> QNScaleOperate.QNScaleUnit.QNScaleUnitKg
+                        DemoUnit.KG.showName -> QNWeightUnit.UNIT_KG
+                        DemoUnit.LB.showName -> QNWeightUnit.UNIT_LB
+                        DemoUnit.ST_LB.showName -> QNWeightUnit.UNIT_ST_LB
+                        DemoUnit.ST.showName -> QNWeightUnit.UNIT_ST
+                        DemoUnit.JIN.showName -> QNWeightUnit.UNIT_JIN
+                        else -> QNWeightUnit.UNIT_KG
                     }
 
-                    op.unit = QNScaleOperate.QNScaleUnit.QNScaleUnitKg
                     Log.e(TAG, "连接设备")
                     mIsConecting = true
                     QNScalePlugin.connectDevice(device, op)
@@ -190,18 +194,24 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 /** 设置测量用户 start **/
                 val user = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
                     .userDao().getUser()
-                val qnUser = QNUser()
-                qnUser.age = user.age
-                qnUser.gender = user.gender
-                qnUser.height = 180
-                qnUser.userid = user.id.toString()
+                val qnUser = QNUser.build(
+                    "user123456789",
+                    if(user.gender == "1") QNGender.MALE else QNGender.FEMALE,
+                    user.age,
+                    180,
+                    false
+                )
                 QNScalePlugin.setMeasureUser(mDevice, qnUser)
 
-                val qnScaleUser = QNScaleUser()
-                qnScaleUser.index = SpUtils.getIntValue(this@QNScaleMeasureActivity, SpUtils.USER_INDEX_KEY)
-                val key = SpUtils.getIntValue(this@QNScaleMeasureActivity, SpUtils.USER_SECRET_KEY)
-                qnScaleUser.key = if(key <= 0) 10086 else key
-                qnScaleUser.isVisitorMode = SpUtils.getBooleanValue(this@QNScaleMeasureActivity, SpUtils.USER_IS_VISITOR_KEY)
+                val index = SpUtils.getIntValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_INDEX_KEY)
+                val key = SpUtils.getIntValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_SECRET_KEY)
+                val isVisitorMode = SpUtils.getBooleanValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_IS_VISITOR_KEY)
+                val qnScaleUser = QNScaleUser.build(
+                    qnUser,
+                    index,
+                    if(key <= 0) 10086 else key,
+                    isVisitorMode
+                )
                 Log.e(TAG, "如果设备支持设置测量用户则去设置，user = $qnScaleUser")
                 QNUserScaleMp.setMeasureUserToUserDevice(mDevice, qnScaleUser)
                 /** 设置测量用户 end **/
@@ -230,9 +240,9 @@ class QNScaleMeasureActivity : ComponentActivity() {
                     Log.e(TAG, "注册用户成功   user = $user")
                     // 保存坑位和key到sp
                     if (user != null) {
-                        SpUtils.saveValue(this@QNScaleMeasureActivity, SpUtils.USER_SECRET_KEY, user.key)
-                        SpUtils.saveValue(this@QNScaleMeasureActivity, SpUtils.USER_INDEX_KEY, user.index)
-                        SpUtils.saveValue(this@QNScaleMeasureActivity, SpUtils.USER_IS_VISITOR_KEY, user.isVisitorMode)
+                        SpUtils.saveValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_SECRET_KEY, user.key)
+                        SpUtils.saveValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_INDEX_KEY, user.index)
+                        SpUtils.saveValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_IS_VISITOR_KEY, user.isVisitorMode)
                     }
 
                 }else {
