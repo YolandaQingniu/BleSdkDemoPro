@@ -134,14 +134,15 @@ class QNScaleMeasureActivity : ComponentActivity() {
         QNScalePlugin.setDeviceListener(object : QNScaleDeviceListener {
             override fun onDiscoverScaleDevice(device: QNScaleDevice?) {
                 Log.e(TAG, "发现设备，mac = ${device?.mac} ")
-                if(mIsConecting ||
-                    (device?.mac != "5C:D6:1F:EB:68:50"
+                if(mIsConecting || (
+                            device?.mac != "5C:D6:1F:EB:68:50"
                             && device?.mac != "F0:FE:6B:CB:8A:C8"
                             && device?.mac != "FF:01:00:00:18:08"
                             && device?.mac != "ED:67:37:11:B3:AC"
                             && device?.mac != "ED:67:37:27:F0:4D"
                             && device?.mac != "A1:7C:08:A6:A8:5F"
                             && device?.mac != "F0:08:D1:B2:F3:CA"
+                            && device?.mac != "C4:5B:BE:B8:D0:1A"
                             && device?.mac != "C4:DD:57:EC:2F:9A"
                             && device?.mac != "C7:C7:63:DF:FF:78")
                 ){
@@ -191,7 +192,7 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 mDevice = device
                 mViewModel.mac.value = mDevice?.mac ?: ""
 
-                /** 设置测量用户 start **/
+                // 设置用户信息
                 val user = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
                     .userDao().getUser()
                 val qnUser = QNUser.build(
@@ -202,32 +203,37 @@ class QNScaleMeasureActivity : ComponentActivity() {
                     false
                 )
                 QNScalePlugin.setMeasureUser(mDevice, qnUser)
+                if(mDevice?.supportScaleUser == true){
+                    /** 设置测量用户 start **/
+                    val index = SpUtils.getIntValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_INDEX_KEY)
+                    val key = SpUtils.getIntValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_SECRET_KEY)
+                    val isVisitorMode = SpUtils.getBooleanValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_IS_VISITOR_KEY)
+                    val qnScaleUser = QNScaleUser.build(
+                        qnUser,
+                        index,
+                        if(key <= 0) 10086 else key,
+                        isVisitorMode
+                    )
+                    Log.e(TAG, "设置测量用户，user = $qnScaleUser")
+                    QNUserScaleMp.setMeasureUserToUserDevice(mDevice, qnScaleUser)
+                } else {
+                    Log.e(TAG, "设备不支持设置测量用户")
+                }
 
-                val index = SpUtils.getIntValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_INDEX_KEY)
-                val key = SpUtils.getIntValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_SECRET_KEY)
-                val isVisitorMode = SpUtils.getBooleanValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_IS_VISITOR_KEY)
-                val qnScaleUser = QNScaleUser.build(
-                    qnUser,
-                    index,
-                    if(key <= 0) 10086 else key,
-                    isVisitorMode
-                )
-                Log.e(TAG, "如果设备支持设置测量用户则去设置，user = $qnScaleUser")
-                QNUserScaleMp.setMeasureUserToUserDevice(mDevice, qnScaleUser)
-                /** 设置测量用户 end **/
-
-                /** 配置wifi start **/
-                val wifiInfo = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
-                    .wifiInfoDao().getWifiInfo()
-                val qnWiFiInfo = QNWiFiInfo()
-                qnWiFiInfo.ssid = wifiInfo.ssid
-                qnWiFiInfo.pwd = wifiInfo.password
-                qnWiFiInfo.serverUrl = wifiInfo.serverUrl
-                Log.e(TAG, "如果设备支持配网则去配网，wifi = $qnWiFiInfo")
-                QNScaleWiFiMp.startConnectWiFi(mDevice, qnWiFiInfo)
-                /** 配置wifi end **/
+                if(mDevice?.supportWiFi == true){
+                    /** 配置wifi **/
+                    val wifiInfo = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
+                        .wifiInfoDao().getWifiInfo()
+                    val qnWiFiInfo = QNWiFiInfo()
+                    qnWiFiInfo.ssid = wifiInfo.ssid
+                    qnWiFiInfo.pwd = wifiInfo.password
+                    qnWiFiInfo.serverUrl = wifiInfo.serverUrl
+                    Log.e(TAG, "配网，wifi = $qnWiFiInfo")
+                    QNScaleWiFiMp.startConnectWiFi(mDevice, qnWiFiInfo)
+                } else {
+                    Log.e(TAG, "设备不支持配网")
+                }
             }
-
         })
 
         QNUserScaleMp.setUserScaleEventListener(object : QNScaleUserEventListener {
@@ -247,6 +253,9 @@ class QNScaleMeasureActivity : ComponentActivity() {
 
                 }else {
                     Log.e(TAG, "注册用户未成功， code = $code")
+                    if(device?.scaleUserFull == true){
+                        Log.e(TAG, "注册用户未成功， 秤端用户数已满")
+                    }
                 }
             }
 
@@ -272,7 +281,7 @@ class QNScaleMeasureActivity : ComponentActivity() {
             }
 
             override fun onConnectWiFiStatus(code: Int, device: QNScaleDevice?) {
-                Log.e(TAG, if(code == 0) "配网成功" else "配网状态返回： code = $code")
+                Log.e(TAG, if(code == 0) "配网成功" else "配网失败，状态返回： code = $code")
             }
 
         })
