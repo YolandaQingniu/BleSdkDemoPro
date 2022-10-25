@@ -16,7 +16,7 @@ import com.qingniu.blesdkdemopro.db.table.WifiInfo
  * @Date: 2022/8/14 20:42
  * @Description:
  */
-@Database(entities = [UnitSetting::class, User::class, WifiInfo::class], version = 2)
+@Database(entities = [UnitSetting::class, User::class, WifiInfo::class], version = 1)
 abstract class DemoDataBase : RoomDatabase() {
     abstract fun unitSettingDao(): UnitSettingDao
     abstract fun userDao(): UserDao
@@ -42,6 +42,8 @@ abstract class DemoDataBase : RoomDatabase() {
                             val defaultUser =User().apply {
                                 gender = "MALE"
                                 age = 30
+                                height = 180
+                                isCurrent = true
                             }
 
                             val defaultWifiInfo = WifiInfo().apply {
@@ -50,9 +52,9 @@ abstract class DemoDataBase : RoomDatabase() {
                                 serverUrl = "http://wifi.yolanda.hk:80/wifi_api/wsps?device_type=7&code="
                             }
 
-                            sInstance!!.unitSettingDao().insert(defaultUnit)
-                            sInstance!!.userDao().insert(defaultUser)
-                            sInstance!!.wifiInfoDao().insert(defaultWifiInfo)
+                            if(sInstance!!.unitSettingDao().getUnitSetting() == null) sInstance!!.unitSettingDao().insert(defaultUnit)
+                            if(sInstance!!.userDao().getUser() == null) sInstance!!.userDao().insert(defaultUser)
+                            if(sInstance!!.wifiInfoDao().getWifiInfo() == null) sInstance!!.wifiInfoDao().insert(defaultWifiInfo)
                         }
                     }
                 }

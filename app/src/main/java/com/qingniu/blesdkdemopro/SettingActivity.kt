@@ -76,7 +76,8 @@ fun Settings() {
         }
 
         SettingItem(text = "Wifi Setting", true) {
-            ctx.startActivity(WifiSettingActivity.getCallIntent(ctx))
+//            ctx.startActivity(WifiSettingActivity.getCallIntent(ctx))
+            ctx.startActivity(QNScalePairNetActivity.getCallIntent(ctx))
         }
 
         SettingItem(text = "Delete User", false) {

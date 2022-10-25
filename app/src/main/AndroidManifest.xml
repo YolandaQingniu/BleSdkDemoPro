@@ -69,6 +69,11 @@
             android:label="@string/title_activity_wifi_setting"
             android:theme="@style/Theme.BleSdkDemoPro" />
         <activity
+            android:name=".QNScalePairNetActivity"
+            android:exported="false"
+            android:label="@string/title_activity_qnscale_pair_net_setting"
+            android:theme="@style/Theme.BleSdkDemoPro" />
+        <activity
             android:name=".UnitSelectActivity"
             android:exported="false"
             android:label="@string/title_activity_unit_select"
