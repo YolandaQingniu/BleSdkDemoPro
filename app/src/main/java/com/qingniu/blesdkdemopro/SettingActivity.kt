@@ -80,14 +80,8 @@ fun Settings() {
             ctx.startActivity(QNScalePairNetActivity.getCallIntent(ctx))
         }
 
-        SettingItem(text = "Delete User", false) {
-            val intent = Intent()
-//            intent.action = UserConstant.ACTION_DELETE_INDEX_USER
-//            val index = SpUtils.getIntValue(ctx, SpUtils.USER_INDEX_KEY)
-//            intent.putExtra(UserConstant.DELETE_USER_INDEX, index)
-
-            intent.action = UserConstant.ACTION_DELETE_ALL_USERS
-            LocalBroadcastManager.getInstance(ctx).sendBroadcast(intent)
+        SettingItem(text = "Bind Devices List", false) {
+            ctx.startActivity(BindDevicesActivity.getCallIntent(ctx))
         }
     }
 }

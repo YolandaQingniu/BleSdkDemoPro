@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.qingniu.blesdkdemopro.db.dao.DeviceUserDao
 import com.qingniu.blesdkdemopro.db.dao.UnitSettingDao
 import com.qingniu.blesdkdemopro.db.dao.UserDao
 import com.qingniu.blesdkdemopro.db.dao.WifiInfoDao
+import com.qingniu.blesdkdemopro.db.table.DeviceUser
 import com.qingniu.blesdkdemopro.db.table.UnitSetting
 import com.qingniu.blesdkdemopro.db.table.User
 import com.qingniu.blesdkdemopro.db.table.WifiInfo
@@ -16,11 +18,12 @@ import com.qingniu.blesdkdemopro.db.table.WifiInfo
  * @Date: 2022/8/14 20:42
  * @Description:
  */
-@Database(entities = [UnitSetting::class, User::class, WifiInfo::class], version = 1)
+@Database(entities = [UnitSetting::class, User::class, WifiInfo::class, DeviceUser::class], version = 1)
 abstract class DemoDataBase : RoomDatabase() {
     abstract fun unitSettingDao(): UnitSettingDao
     abstract fun userDao(): UserDao
     abstract fun wifiInfoDao(): WifiInfoDao
+    abstract fun deviceUserDao(): DeviceUserDao
 
     companion object {
         @Volatile
@@ -44,6 +47,7 @@ abstract class DemoDataBase : RoomDatabase() {
                                 age = 30
                                 height = 180
                                 isCurrent = true
+                                userId = "user${System.currentTimeMillis()}"
                             }
 
                             val defaultWifiInfo = WifiInfo().apply {

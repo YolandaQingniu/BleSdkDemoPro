@@ -12,4 +12,6 @@ object UserConstant {
     const val ACTION_DELETE_INDEX_USER = "action_delete_index_user"
     // 删除用户坑位
     const val DELETE_USER_INDEX = "delete_user_index"
+    // 删除用户
+    const val DELETE_USER = "delete_user"
 }

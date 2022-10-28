@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .background(BgGrey)
                     ) {
-                        TitleBar("Device Type", true)
+                        TitleBar("Device Type", false)
                         Column(Modifier.align(Alignment.Center)) {
                             val ctx = LocalContext.current
                             Card(Modifier.clickable {

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.Message
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
@@ -20,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -44,6 +46,8 @@ import com.qingniu.qnscaleplugin.model.*
 class QNScalePairNetActivity : ComponentActivity() {
     // Is connect deivce
     private var mIsConnecting = false
+    // 是否已经连接设备
+    private var mIsConnected = false
 
     companion object {
         const val TAG = "QNScalePairNet"
@@ -54,7 +58,17 @@ class QNScalePairNetActivity : ComponentActivity() {
 
     lateinit var mViewModel: QNScalePairNetViewModel
 
-    val mHandler = Handler(Looper.getMainLooper())
+    val mHandler = object : Handler(Looper.getMainLooper()){
+        override fun handleMessage(msg: Message) {
+            when(msg.what){
+                0 -> {
+                    mProgress.value += 0.025F
+                }
+            }
+        }
+    }
+
+    var mProgress: MutableState<Float> = mutableStateOf(0F)
 
     var mDevice: QNScaleDevice? = null
 
@@ -82,7 +96,8 @@ class QNScalePairNetActivity : ComponentActivity() {
                         mutableStateOf(dao.getWifiInfo().password)
                     }
                     val serverUrl = remember {
-                        mutableStateOf(dao.getWifiInfo().serverUrl)
+                        val url = dao.getWifiInfo().serverUrl
+                        mutableStateOf(if(TextUtils.isEmpty(url)) url else "http://wifi.yolanda.hk:80/wifi_api/wsps?device_type=7&code=")
                     }
                     mSsid = ssid.value
                     mPwd = password.value
@@ -125,7 +140,9 @@ class QNScalePairNetActivity : ComponentActivity() {
                             ) {
                                 Text(
                                     text = "ssid", fontSize = 16.sp,
-                                    modifier = Modifier.padding(start = 10.dp, bottom = 10.dp).fillMaxWidth()
+                                    modifier = Modifier
+                                        .padding(start = 10.dp, bottom = 10.dp)
+                                        .fillMaxWidth()
                                 )
                                 TextField(value = ssid.value.toString(), onValueChange = {
                                     if (!TextUtils.isEmpty(it)) {
@@ -142,7 +159,9 @@ class QNScalePairNetActivity : ComponentActivity() {
                             Column(Modifier.padding(top = 20.dp)) {
                                 Text(
                                     text = "password", fontSize = 16.sp,
-                                    modifier = Modifier.padding(start = 10.dp, bottom = 10.dp).fillMaxWidth()
+                                    modifier = Modifier
+                                        .padding(start = 10.dp, bottom = 10.dp)
+                                        .fillMaxWidth()
                                 )
                                 TextField(value = password.value.toString(), onValueChange = {
                                     if (!TextUtils.isEmpty(it)) {
@@ -156,34 +175,37 @@ class QNScalePairNetActivity : ComponentActivity() {
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                                 )
                             }
-                            Column(Modifier.padding(top = 20.dp)) {
-                                Text(
-                                    text = "serverUrl", fontSize = 16.sp,
-                                    modifier = Modifier.padding(start = 10.dp, bottom = 10.dp).fillMaxWidth()
-                                )
-                                TextField(value = serverUrl.value.toString(), onValueChange = {
-                                    if (!TextUtils.isEmpty(it)) {
-                                        serverUrl.value = it
-
-                                    } else {
-                                        serverUrl.value = ""
-                                    }
-                                    mServerUrl = serverUrl.value
-                                },
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri)
-                                )
-                            }
                             Column(
-                                Modifier.padding(top = 40.dp, bottom = 80.dp).fillMaxWidth(),
+                                Modifier
+                                    .padding(top = 40.dp, bottom = 80.dp)
+                                    .fillMaxWidth(),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Bottom
                             ) {
                                 Button(
                                     onClick = {pairNet()},
-                                    Modifier.width(200.dp).height(56.dp)
+                                    Modifier
+                                        .width(200.dp)
+                                        .height(56.dp)
                                 ) {
                                     Text(text = "Pair Net", fontSize = 18.sp)
                                 }
+                            }
+
+                            Column(
+                                Modifier
+                                    .padding(top = 60.dp, bottom = 40.dp)
+                                    .fillMaxWidth(),
+                            ) {
+                                LinearProgressIndicator(
+                                    // 设置水平进度条当前进度颜色
+                                    color = Color.Black,
+                                    // 设置水平进度条总长度颜色
+                                    backgroundColor = Color.Gray,
+                                    // 设置水平进度条当前进度
+                                    progress = mProgress.value,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
                             }
                         }
                     }
@@ -207,18 +229,21 @@ class QNScalePairNetActivity : ComponentActivity() {
         QNScalePlugin.setDeviceListener(object : QNScaleDeviceListener {
             override fun onDiscoverScaleDevice(device: QNScaleDevice?) {
                 Log.e(TAG, "Discover scale，mac = ${device?.mac} ")
-                if (mIsConnecting || (
-                            device?.mac != "5C:D6:1F:EB:68:50"
-                                    && device?.mac != "F0:FE:6B:CB:8A:C8"
-                                    && device?.mac != "FF:01:00:00:18:08"
-                                    && device?.mac != "ED:67:37:11:B3:AC"
-                                    && device?.mac != "ED:67:37:27:F0:4D"
-                                    && device?.mac != "A1:7C:08:A6:A8:5F"
-                                    && device?.mac != "F0:08:D1:B2:F3:CA"
-                                    && device?.mac != "C4:5B:BE:B8:D0:1A"
-                                    && device?.mac != "C4:DD:57:EC:2F:9A"
-                                    && device?.mac != "C7:C7:63:DF:FF:78")
-                ) {
+//                if (mIsConnecting || (
+//                            device?.mac != "5C:D6:1F:EB:68:50"
+//                                    && device?.mac != "F0:FE:6B:CB:8A:C8"
+//                                    && device?.mac != "FF:01:00:00:18:08"
+//                                    && device?.mac != "ED:67:37:11:B3:AC"
+//                                    && device?.mac != "ED:67:37:27:F0:4D"
+//                                    && device?.mac != "A1:7C:08:A6:A8:5F"
+//                                    && device?.mac != "F0:08:D1:B2:F3:CA"
+//                                    && device?.mac != "C4:5B:BE:B8:D0:1A"
+//                                    && device?.mac != "C4:DD:57:EC:2F:9A"
+//                                    && device?.mac != "C7:C7:63:DF:FF:78")
+//                ) {
+//                    return
+//                }
+                if(mIsConnected){
                     return
                 }
                 QNPlugin.getInstance(this@QNScalePairNetActivity).stopScan()
@@ -252,12 +277,15 @@ class QNScalePairNetActivity : ComponentActivity() {
                 Log.e(TAG, "Connect scale success!")
                 mIsConnecting = false
                 mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.CONNECT
+                mIsConnected = true
             }
 
             override fun onConnectFail(code: Int, device: QNScaleDevice?) {
                 Log.e(TAG, "Connect scale failed!")
                 mIsConnecting = false
                 mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.DISCONNECT
+                mIsConnected = false
+                mHandler.removeMessages(0)
             }
 
             override fun onReadyInteractResult(device: QNScaleDevice?) {
@@ -266,12 +294,22 @@ class QNScalePairNetActivity : ComponentActivity() {
                 mViewModel.mac.value = mDevice?.mac ?: ""
 
             }
+
+            override fun onDisconnected(device: QNScaleDevice?) {
+                Log.e(TAG, "Device is disconnected!")
+                mIsConnected = false
+                mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.DISCONNECT
+                mHandler.removeMessages(0)
+            }
         })
 
         QNScaleWiFiMp.setWiFiStatusListener(object : QNScaleWiFiListener {
             override fun onStartWiFiConnect(device: QNScaleDevice?) {
                 Log.e(TAG, "Start pair net!")
                 mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.PAIR_NET_ING
+                mProgress.value = 0F
+                mHandler.removeMessages(0)
+                mHandler.sendEmptyMessageDelayed(0, 1000)
             }
 
             override fun onConnectWiFiStatus(code: Int, device: QNScaleDevice?) {
@@ -290,7 +328,8 @@ class QNScalePairNetActivity : ComponentActivity() {
                     mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.PAIR_NET_FAIL
                     Toast.makeText(this@QNScalePairNetActivity, "Pair net failed！", Toast.LENGTH_SHORT).show()
                 }
-
+                mProgress.value = 1F
+                mHandler.removeMessages(0)
             }
 
         })

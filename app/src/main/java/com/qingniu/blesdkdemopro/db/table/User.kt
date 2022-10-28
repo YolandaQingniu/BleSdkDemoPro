@@ -14,6 +14,9 @@ class User {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 
+    @ColumnInfo(name = "userId", defaultValue = "")
+    var userId: String = ""
+
     @ColumnInfo(name = "gender", defaultValue = "MALE")
     lateinit var gender: String
 

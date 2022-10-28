@@ -35,6 +35,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.qingniu.blesdkdemopro.constant.DemoUnit
 import com.qingniu.blesdkdemopro.constant.UserConstant
 import com.qingniu.blesdkdemopro.db.DemoDataBase
+import com.qingniu.blesdkdemopro.db.table.DeviceUser
+import com.qingniu.blesdkdemopro.db.table.User
 import com.qingniu.blesdkdemopro.ui.theme.BgGrey
 import com.qingniu.blesdkdemopro.ui.theme.BleSdkDemoProTheme
 import com.qingniu.blesdkdemopro.ui.theme.DividerGrey
@@ -51,15 +53,48 @@ import com.qingniu.qnscaleplugin.QNScaleWiFiMp
 import com.qingniu.qnscaleplugin.QNUserScaleMp
 import com.qingniu.qnscaleplugin.listener.*
 import com.qingniu.qnscaleplugin.model.*
+import java.text.DecimalFormat
 
 class QNScaleMeasureActivity : ComponentActivity() {
     // 是否正在连接设备
-    private var mIsConecting = false
+    private var mIsConnecting = false
+    // 是否已经连接设备
+    private var mIsConnected = false
+
+    private var mWillDeleteDeviceUSer: DeviceUser? = null
+
+    private val mDeviceUserDao by lazy {
+        DemoDataBase.getInstance(this@QNScaleMeasureActivity).deviceUserDao()
+    }
 
     companion object {
         const val TAG = "QNScale"
         fun getCallIntent(ctx: Context): Intent {
             return Intent(ctx, QNScaleMeasureActivity::class.java)
+        }
+    }
+
+    val mCurWeightUnit by lazy {
+        val weightUnit = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
+            .unitSettingDao().getUnitSetting().weightUnit
+        when(weightUnit) {
+            DemoUnit.KG.showName -> QNWeightUnit.UNIT_KG
+            DemoUnit.LB.showName -> QNWeightUnit.UNIT_LB
+            DemoUnit.ST_LB.showName -> QNWeightUnit.UNIT_ST_LB
+            DemoUnit.ST.showName -> QNWeightUnit.UNIT_ST
+            DemoUnit.JIN.showName -> QNWeightUnit.UNIT_JIN
+            else -> QNWeightUnit.UNIT_KG
+        }
+    }
+
+    val mCurLengthUnit by lazy {
+        val lengthUnit = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
+            .unitSettingDao().getUnitSetting().lengthUnit
+        when(lengthUnit) {
+            DemoUnit.CM.showName -> QNLengthUnit.UNIT_CM
+            DemoUnit.IN.showName -> QNLengthUnit.UNIT_IN
+            DemoUnit.FT_IN.showName -> QNLengthUnit.UNIT_FT_IN
+            else -> QNLengthUnit.UNIT_CM
         }
     }
 
@@ -76,16 +111,16 @@ class QNScaleMeasureActivity : ComponentActivity() {
                     // 删除全部用户
                     if(mDevice != null){
                         Log.e(TAG, "删除全部用户")
-                        if(mDevice != null) SpUtils.cleanUserData(mDevice!!.mac, this@QNScaleMeasureActivity)
+                        if(mDevice != null) mDeviceUserDao.getAllDeviceUser().filter { it.mac == mDevice?.mac }.forEach { mDeviceUserDao.delete(it) }
                         QNUserScaleMp.deleteUserList(mDevice, listOf(1, 2, 3, 4, 5, 6, 7, 8))
                     }
                 }
                 UserConstant.ACTION_DELETE_INDEX_USER -> {
                     // 删除指定坑位的用户
-                    val index = i.getIntExtra(UserConstant.DELETE_USER_INDEX, 0)
-                    if(mDevice != null && index > 0){
-                        Log.e(TAG, "删除指定坑位的用户, index = $index")
-                        QNUserScaleMp.deleteUserList(mDevice, listOf(index))
+                    val mWillDeleteDeviceUSer = i.getParcelableExtra<DeviceUser>(UserConstant.DELETE_USER)
+                    if(mDevice != null && mWillDeleteDeviceUSer != null && mWillDeleteDeviceUSer.index > 0){
+                        Log.e(TAG, "删除指定坑位的用户, index = ${mWillDeleteDeviceUSer.index}")
+                        QNUserScaleMp.deleteUserList(mDevice, listOf(mWillDeleteDeviceUSer.index))
                     }
                 }
             }
@@ -137,36 +172,27 @@ class QNScaleMeasureActivity : ComponentActivity() {
         QNScalePlugin.setDeviceListener(object : QNScaleDeviceListener {
             override fun onDiscoverScaleDevice(device: QNScaleDevice?) {
                 Log.e(TAG, "发现设备，mac = ${device?.mac} ")
-                if(mIsConecting || (
-                            device?.mac != "5C:D6:1F:EB:68:50"
-                            && device?.mac != "F0:FE:6B:CB:8A:C8"
-                            && device?.mac != "FF:01:00:00:18:08"
-                            && device?.mac != "ED:67:37:11:B3:AC"
-                            && device?.mac != "ED:67:37:27:F0:4D"
-                            && device?.mac != "A1:7C:08:A6:A8:5F"
-                            && device?.mac != "F0:08:D1:B2:F3:CA"
-                            && device?.mac != "C4:5B:BE:B8:D0:1A"
-                            && device?.mac != "C4:DD:57:EC:2F:9A"
-                            && device?.mac != "C7:C7:63:DF:FF:78")
-                ){
-                    return
-                }
+//                if(mIsConecting || (
+//                            device?.mac != "5C:D6:1F:EB:68:50"
+//                            && device?.mac != "F0:FE:6B:CB:8A:C8"
+//                            && device?.mac != "FF:01:00:00:18:08"
+//                            && device?.mac != "ED:67:37:11:B3:AC"
+//                            && device?.mac != "ED:67:37:27:F0:4D"
+//                            && device?.mac != "A1:7C:08:A6:A8:5F"
+//                            && device?.mac != "F0:08:D1:B2:F3:CA"
+//                            && device?.mac != "C4:5B:BE:B8:D0:1A"
+//                            && device?.mac != "C4:DD:57:EC:2F:9A"
+//                            && device?.mac != "C7:C7:63:DF:FF:78")
+//                ){
+//                    return
+//                }
+                if(mIsConnected) return
                 QNPlugin.getInstance(this@QNScaleMeasureActivity).stopScan()
                 device.let {
                     val op = QNScaleOperate()
-                    val curWeightUnit = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
-                        .unitSettingDao().getUnitSetting().weightUnit
-                    op.unit = when(curWeightUnit) {
-                        DemoUnit.KG.showName -> QNWeightUnit.UNIT_KG
-                        DemoUnit.LB.showName -> QNWeightUnit.UNIT_LB
-                        DemoUnit.ST_LB.showName -> QNWeightUnit.UNIT_ST_LB
-                        DemoUnit.ST.showName -> QNWeightUnit.UNIT_ST
-                        DemoUnit.JIN.showName -> QNWeightUnit.UNIT_JIN
-                        else -> QNWeightUnit.UNIT_KG
-                    }
-
+                    op.unit = mCurWeightUnit
                     Log.e(TAG, "连接设备")
-                    mIsConecting = true
+                    mIsConnecting = true
                     QNScalePlugin.connectDevice(device, op)
                 }
             }
@@ -180,13 +206,15 @@ class QNScaleMeasureActivity : ComponentActivity() {
         QNScalePlugin.setStatusListener(object : QNScaleStatusListener {
             override fun onConnectedSuccess(device: QNScaleDevice?) {
                 Log.e(TAG, "设备连接成功")
-                mIsConecting = false
+                mIsConnecting = false
+                mIsConnected = true
                 mViewModel.vState.value = QNScaleViewModel.MeasureState.CONNECT
             }
 
             override fun onConnectFail(code: Int, device: QNScaleDevice?) {
                 Log.e(TAG, "设备连接失败")
-                mIsConecting = false
+                mIsConnecting = false
+                mIsConnected = false
                 mViewModel.vState.value = QNScaleViewModel.MeasureState.DISCONNECT
             }
 
@@ -198,30 +226,55 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 // 设置用户信息
                 val user = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
                     .userDao().getUser()
-                val qnUser = QNUser.build(
-                    "user123456789",
-                    if(user.gender == "MALE") QNGender.MALE else QNGender.FEMALE,
-                    user.age,
-                    user.height,
-                    false
-                )
-                QNScalePlugin.setMeasureUser(mDevice, qnUser)
+                val deviceUsers = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
+                    .deviceUserDao().getDeviceUser(user?.userId?: "")
+                var deviceUser: DeviceUser? = null
+                if(deviceUsers != null){
+                    deviceUsers.forEach {
+                        if(it.mac == mDevice?.mac){
+                            deviceUser = it
+                        }
+                    }
+                }
+                val userId = user.userId
+                val gender = if(user.gender == "MALE") QNGender.MALE else QNGender.FEMALE
+                val age = user.age
+                val height = user.height
+
                 if(mDevice?.supportScaleUser == true){
                     /** 设置测量用户 start **/
-                    val index = SpUtils.getIntValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_INDEX_KEY)
-                    val key = SpUtils.getIntValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_SECRET_KEY)
-                    val isVisitorMode = SpUtils.getBooleanValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_IS_VISITOR_KEY)
+                    val index = deviceUser?.index ?: 0
+                    val key =  deviceUser?.key ?: 1000
+                    val isVisitorMode = deviceUser?.isVisitorMode == true
                     val qnScaleUser = QNScaleUser.build(
-                        qnUser,
+                        userId,
+                        gender,
+                        age,
+                        height,
+                        false,
                         index,
-                        if(key <= 0) 10086 else key,
+                        key,
                         isVisitorMode
                     )
                     Log.e(TAG, "设置测量用户，user = $qnScaleUser")
                     QNUserScaleMp.setMeasureUserToUserDevice(mDevice, qnScaleUser)
                 } else {
                     Log.e(TAG, "设备不支持设置测量用户")
+                    val qnUser = QNUser.build(
+                        userId,
+                        gender,
+                        age,
+                        height,
+                        false
+                    )
+                    QNScalePlugin.setMeasureUser(mDevice, qnUser)
                 }
+            }
+
+            override fun onDisconnected(device: QNScaleDevice?) {
+                Log.e(TAG, "设备已断开")
+                mIsConnected = false
+                mViewModel.vState.value = QNScaleViewModel.MeasureState.DISCONNECT
             }
         })
 
@@ -234,17 +287,13 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 if(code == 0){
                     Log.e(TAG, "注册用户成功   user = $user")
                     // 保存坑位和key到sp
-                    if (user != null) {
-                        SpUtils.saveValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_SECRET_KEY, user.key)
-                        SpUtils.saveValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_INDEX_KEY, user.index)
-                        SpUtils.saveValue(mDevice?.mac!!, this@QNScaleMeasureActivity, SpUtils.USER_IS_VISITOR_KEY, user.isVisitorMode)
-                    }
-
+                    insertOrUpdateDeviceUser(user, device)
                 }else {
                     Log.e(TAG, "注册用户未成功， code = $code")
                     if(device?.scaleUserFull == true){
                         Log.e(TAG, "注册用户未成功， 秤端用户数已满")
                     }
+                    mViewModel.vState.value = QNScaleViewModel.MeasureState.USER_REGISTER_OR_VISIT_FAIL
                 }
             }
 
@@ -254,12 +303,23 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 device: QNScaleDevice?
             ) {
                 Log.e(TAG, "同步用户结果，code = $code   user = $user")
+                if(code == 0){
+                    insertOrUpdateDeviceUser(user, device)
+                }else {
+                    mViewModel.vState.value = QNScaleViewModel.MeasureState.USER_REGISTER_OR_VISIT_FAIL
+                }
             }
 
             override fun onDeleteUsersResult(code: Int, device: QNScaleDevice?) {
                 val msg = if(code == 0) "删除用户成功" else "删除用户失败，code = $code"
                 Log.e(TAG, msg)
                 Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+                if(code == 0){
+                    val dao = DemoDataBase.getInstance(this@QNScaleMeasureActivity).deviceUserDao()
+                    if(mWillDeleteDeviceUSer != null) dao.delete(mWillDeleteDeviceUSer!!)
+                }
+                mWillDeleteDeviceUSer = null
+                LocalBroadcastManager.getInstance(this@QNScaleMeasureActivity).sendBroadcast(Intent("update_bind_devices"))
             }
 
         })
@@ -279,14 +339,14 @@ class QNScaleMeasureActivity : ComponentActivity() {
             override fun onRealTimeWeight(weight: String?, device: QNScaleDevice?) {
                 Log.e(TAG, "实时测量： weight = $weight")
                 mViewModel.vState.value = QNScaleViewModel.MeasureState.MEASURE_ING
-                mViewModel.weight.value = createQNScaleWeightStr(weight?.toDouble()?: 0.0, QNWeightUnit.UNIT_KG)
+                mViewModel.weight.value = createQNScaleWeightStr(weight?.toDouble()?: 0.0, mCurWeightUnit)
             }
 
             override fun onReceiveMeasureResult(scaleData: QNScaleData?, device: QNScaleDevice?) {
                 Log.e(TAG, "测量结果： data = $scaleData")
                 mViewModel.vState.value = QNScaleViewModel.MeasureState.MEASURE_END
-                mViewModel.height.value = createQNScaleHeightStr(if(scaleData?.height == null) 0 else (scaleData?.height!!.toInt()), QNLengthUnit.UNIT_CM)
-                mViewModel.weight.value = createQNScaleWeightStr(if(scaleData?.weight == null) 0.0 else (scaleData?.weight!!.toDouble()), QNWeightUnit.UNIT_KG)
+                mViewModel.height.value = createQNScaleHeightStr(if(scaleData?.height == null) 0 else (scaleData?.height!!.toInt()), mCurLengthUnit)
+                mViewModel.weight.value = createQNScaleWeightStr(if(scaleData?.weight == null) 0.0 else (scaleData?.weight!!.toDouble()), mCurWeightUnit)
                 mViewModel.mac.value = device?.mac ?: ""
                 mViewModel.timestamp.value = scaleData?.timeStamp ?: ""
                 mViewModel.bmi.value = scaleData?.bmi ?: ""
@@ -354,41 +414,83 @@ class QNScaleMeasureActivity : ComponentActivity() {
         })
     }
 
+    private fun insertOrUpdateDeviceUser(user: QNScaleUser?, device: QNScaleDevice?){
+        if (user != null) {
+            // 设置用户信息
+            val dao = DemoDataBase.getInstance(this@QNScaleMeasureActivity).deviceUserDao()
+            val deviceUsers = dao.getDeviceUser(user.userid)
+            if(deviceUsers != null && deviceUsers.isNotEmpty()){
+                val filterUsers = deviceUsers.filter { it.mac == device?.mac }
+                if(filterUsers != null && filterUsers.isNotEmpty()){
+                    val updateUser = filterUsers.get(0)
+                    updateUser.index = user.index
+                    updateUser.isVisitorMode = user.isVisitorMode
+                    updateUser.isSupportUser = device?.supportScaleUser == true
+                    updateUser.isSupportWifi = device?.supportWiFi == true
+                    Log.e(TAG, "update device user, $updateUser")
+                    dao.update(updateUser)
+                    return
+                }
+            }
+            device?.let {
+                var temp = 0L
+                deviceUsers.forEach {
+                    if(it.id >= temp){
+                        temp = it.id + 1
+                    }
+                }
+                val insertUser = DeviceUser()
+                insertUser.id = temp
+                insertUser.index = user.index
+                insertUser.mac = device!!.mac
+                insertUser.key = user.key
+                insertUser.userId = user.userid
+                insertUser.isVisitorMode = user.isVisitorMode
+                insertUser.isSupportUser = it.supportScaleUser
+                insertUser.isSupportWifi = it.supportWiFi
+                Log.e(TAG, "insert device user, $insertUser")
+                dao.insert(insertUser)
+            }
+        }
+    }
+
 }
 
 fun createQNScaleWeightStr(weight: Double, unit: QNWeightUnit): String{
+    val format = DecimalFormat("0.0")
     when(unit){
         QNWeightUnit.UNIT_KG -> {
-            return "$weight KG"
+            return "${format.format(weight)} KG"
         }
         QNWeightUnit.UNIT_LB -> {
-            return "$weight LB"
+            return "${format.format(weight * 2.2046226)} LB"
         }
         QNWeightUnit.UNIT_JIN -> {
-            return "$weight 斤"
+            return "${format.format(weight * 2)} 斤"
         }
         QNWeightUnit.UNIT_ST -> {
-            return "$weight ST"
+            return "${format.format(weight * 0.157473)} ST"
         }
         QNWeightUnit.UNIT_ST_LB -> {
-            return "$weight ST_LB"
+            return "${format.format(weight * 0.157473)}:${format.format(weight * 2.2046226)} ST:LB"
         }
         else ->{
-            return "$weight KG"
+            return "${format.format(weight)} KG"
         }
     }
 }
 
 fun createQNScaleHeightStr(height: Int, unit: QNLengthUnit): String{
+    val format = DecimalFormat("0.0")
     when(unit){
         QNLengthUnit.UNIT_CM -> {
-            return "$height CM"
+            return "${format.format(height)} CM"
         }
         QNLengthUnit.UNIT_IN -> {
-            return "$height IN"
+            return "${format.format(height * 0.3937008)} IN"
         }
         QNLengthUnit.UNIT_FT_IN -> {
-            return "$height FT_IN"
+            return "${format.format(height * 0.0328084)}:${format.format(height * 0.3937008)}  FT:IN"
         }
         else ->{
             return "$height CM"
@@ -410,6 +512,7 @@ fun QNScaleStatusBar() {
         when (hsvm.vState.value) {
             QNScaleViewModel.MeasureState.CONNECT -> "Connected"
             QNScaleViewModel.MeasureState.DISCONNECT -> "Disconnected"
+            QNScaleViewModel.MeasureState.USER_REGISTER_OR_VISIT_FAIL -> "User register or visit fail"
             QNScaleViewModel.MeasureState.MEASURE_ING -> "Measure ing"
             QNScaleViewModel.MeasureState.MEASURE_END -> "Measure end"
             QNScaleViewModel.MeasureState.MEASURE_FAIL -> "Measure fail"
@@ -680,7 +783,7 @@ fun QNScaleIndicator(
 class QNScaleViewModel : ViewModel() {
 
     enum class MeasureState {
-        CONNECT, DISCONNECT, MEASURE_ING, MEASURE_END, MEASURE_FAIL
+        CONNECT, DISCONNECT, USER_REGISTER_OR_VISIT_FAIL, MEASURE_ING, MEASURE_END, MEASURE_FAIL
     }
 
     var mac: MutableState<String> = mutableStateOf("")

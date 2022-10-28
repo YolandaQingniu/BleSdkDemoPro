@@ -84,6 +84,11 @@
             android:label="@string/title_activity_setting"
             android:theme="@style/Theme.BleSdkDemoPro" />
         <activity
+            android:name=".BindDevicesActivity"
+            android:exported="false"
+            android:label="@string/title_activity_bind_devices"
+            android:theme="@style/Theme.BleSdkDemoPro" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"

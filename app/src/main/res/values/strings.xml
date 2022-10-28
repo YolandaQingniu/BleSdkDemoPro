@@ -8,4 +8,5 @@
     <string name="title_activity_user_setting">UserSettingActivity</string>
     <string name="title_activity_wifi_setting">WifiSettingActivity</string>
     <string name="title_activity_qnscale_pair_net_setting">QNScalePairNetActivity</string>
+    <string name="title_activity_bind_devices">BindDevicesActivity</string>
 </resources>

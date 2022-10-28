@@ -143,6 +143,7 @@ class UserSettingActivity : ComponentActivity() {
                                     this.gender = gender.value
                                     this.height = height.value
                                     this.isCurrent = false
+                                    this.userId = "user${System.currentTimeMillis()}"
                                 }
                                 dao.insert(user)
                                 users.value = dao.getAllUser()
