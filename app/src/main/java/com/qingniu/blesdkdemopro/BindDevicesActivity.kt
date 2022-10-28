@@ -1,19 +1,14 @@
 package com.qingniu.blesdkdemopro
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.text.TextUtils
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -28,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -57,12 +53,9 @@ import com.qingniu.qnscaleplugin.QNScaleWiFiMp
 import com.qingniu.qnscaleplugin.QNUserScaleMp
 import com.qingniu.qnscaleplugin.listener.*
 import com.qingniu.qnscaleplugin.model.*
+import java.util.concurrent.CopyOnWriteArrayList
 
 class BindDevicesActivity : ComponentActivity() {
-    // Is connect deivce
-    private var mIsConnecting = false
-    // 是否已经连接设备
-    private var mIsConnected = false
 
     companion object {
         const val TAG = "BindDevices"
@@ -74,23 +67,31 @@ class BindDevicesActivity : ComponentActivity() {
         DemoDataBase.getInstance(this).deviceUserDao()
     }
 
-    val mDeviceUsers by lazy {
-        mutableStateOf(dao.getAllDeviceUser())
+    val mDeviceUserList by lazy {
+        mutableStateOf(getMacList())
+    }
+
+    private fun getMacList(): CopyOnWriteArrayList<DeviceUser> {
+        val allDeviceUsers = dao.getAllDeviceUser()
+        val resultList = CopyOnWriteArrayList<DeviceUser>()
+        allDeviceUsers.forEach { du ->
+            if(resultList.isEmpty()){
+                resultList.add(du)
+            }else {
+                var flag = false
+                resultList.forEach { r ->
+                    if(r.mac == du.mac){
+                        flag = true
+                        return@forEach
+                    }
+                }
+                if(!flag) resultList.add(du)
+            }
+        }
+        return resultList
     }
 
     lateinit var mViewModel: BindDeviceViewModel
-
-    private val mReceiver = object : BroadcastReceiver(){
-        override fun onReceive(p0: Context?, i: Intent?) {
-            when(i?.action){
-                "update_bind_devices" -> {
-                    mDeviceUsers.value = dao.getAllDeviceUser()
-                }
-            }
-        }
-
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,13 +136,8 @@ class BindDevicesActivity : ComponentActivity() {
                                 Modifier.padding(top = 20.dp, bottom = 20.dp),
                                 horizontalAlignment = Alignment.Start
                             ) {
-//                            Text(
-//                                text = " List", fontSize = 16.sp,
-//                                modifier = Modifier.padding(start = 10.dp, bottom = 10.dp)
-//                            )
-//                            UserList(this@UserSettingActivity, users = users.value)
                                 LazyColumn(){
-                                    itemsIndexed(items = mDeviceUsers.value){_, item ->
+                                    itemsIndexed(items = mDeviceUserList.value){_, item ->
                                         Box(
                                             Modifier
                                                 .fillMaxWidth()
@@ -175,7 +171,15 @@ class BindDevicesActivity : ComponentActivity() {
                                                         Modifier
                                                             .size(160.dp, 20.dp)
                                                             .align(Alignment.CenterEnd)
-                                                            .padding(end = 140.dp),
+                                                            .padding(end = 140.dp)
+                                                            .clickable {
+                                                                startActivity(
+                                                                    DeviceUserManageActivity.getCallIntent(
+                                                                        ctx,
+                                                                        item.mac
+                                                                    )
+                                                                )
+                                                            },
                                                         //设置图片颜色过滤
 //                                                    colorFilter = ColorFilter.tint(color = Color.Red, BlendMode.Color),
                                                         //设置图片裁剪方式
@@ -200,11 +204,12 @@ class BindDevicesActivity : ComponentActivity() {
                                                 }
 
                                                 Button({
-                                                    val intent = Intent()
-                                                    intent.action = UserConstant.ACTION_DELETE_INDEX_USER
-                                                    intent.putExtra(UserConstant.DELETE_USER, item)
-                                                    LocalBroadcastManager.getInstance(this@BindDevicesActivity).sendBroadcast(intent)
-
+                                                    dao.getAllDeviceUser().forEach {
+                                                        if(it.mac == item.mac){
+                                                            dao.delete(it)
+                                                        }
+                                                    }
+                                                    mDeviceUserList.value = getMacList()
                                                 },
                                                     Modifier
                                                         .align(Alignment.CenterEnd)
@@ -233,17 +238,6 @@ class BindDevicesActivity : ComponentActivity() {
                 }
             }
         }
-        init()
-    }
-
-    private fun init(){
-        val filter = IntentFilter("update_bind_devices")
-        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, filter)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver)
     }
 }
 
