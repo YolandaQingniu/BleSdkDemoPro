@@ -29,6 +29,7 @@ if (USE_BLE_TYPE as int == 0) {
     include ':qnheightweightscalepluginX'
     include ':qnalgorithmpluginX'
     include ':qnrulerpluginX'
+    include ':qnscalepluginX'
 } else if (USE_BLE_TYPE as int == 2) {
     //基础SDK
     include ':qnplugin'

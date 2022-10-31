@@ -5,6 +5,7 @@ plugins {
 apply from: "../gradle/publish.gradle"
 
 android {
+    namespace 'com.qingniu.qnscalepluginx'
     compileSdk 32
 
     defaultConfig {
@@ -25,17 +26,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
-    }
 }
 
 dependencies {
+
     implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
-    api files('libs/qnalgorithmplugin-2.5.2-1.2.0.jar')
+    api files('libs/qnscaleplugin-1.2.0.jar')
 
     implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'com.google.android.material:material:1.6.1'
