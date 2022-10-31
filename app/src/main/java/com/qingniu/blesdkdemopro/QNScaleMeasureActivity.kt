@@ -117,10 +117,10 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 }
                 UserConstant.ACTION_DELETE_INDEX_USER -> {
                     // 删除指定坑位的用户
-                    val mWillDeleteDeviceUSer = i.getParcelableExtra<DeviceUser>(UserConstant.DELETE_USER)
-                    if(mDevice != null && mWillDeleteDeviceUSer != null && mWillDeleteDeviceUSer.index > 0){
-                        Log.e(TAG, "删除指定坑位的用户, index = ${mWillDeleteDeviceUSer.index}")
-                        QNUserScaleMp.deleteUserList(mDevice, listOf(mWillDeleteDeviceUSer.index))
+                    val indexs = i.getIntegerArrayListExtra(UserConstant.DELETE_USER_INDEX)
+                    if(mDevice != null  && indexs != null && !indexs.isEmpty()){
+                        Log.e(TAG, "删除指定坑位的用户, index = ${indexs.size}")
+                        QNUserScaleMp.deleteUserList(mDevice, indexs.toList())
                     }
                 }
             }
@@ -222,53 +222,7 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 Log.e(TAG, "设备允许交互")
                 mDevice = device
                 mViewModel.mac.value = mDevice?.mac ?: ""
-
-                // 设置用户信息
-                val user = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
-                    .userDao().getUser()
-                val deviceUsers = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
-                    .deviceUserDao().getDeviceUser(user?.userId?: "")
-                var deviceUser: DeviceUser? = null
-                if(deviceUsers != null){
-                    deviceUsers.forEach {
-                        if(it.mac == mDevice?.mac){
-                            deviceUser = it
-                        }
-                    }
-                }
-                val userId = user.userId
-                val gender = if(user.gender == "MALE") QNGender.MALE else QNGender.FEMALE
-                val age = user.age
-                val height = user.height
-
-                if(mDevice?.supportScaleUser == true){
-                    /** 设置测量用户 start **/
-                    val index = deviceUser?.index ?: 0
-                    val key =  deviceUser?.key ?: 1000
-                    val isVisitorMode = deviceUser?.isVisitorMode == true
-                    val qnScaleUser = QNScaleUser.build(
-                        userId,
-                        gender,
-                        age,
-                        height,
-                        false,
-                        index,
-                        key,
-                        isVisitorMode
-                    )
-                    Log.e(TAG, "设置测量用户，user = $qnScaleUser")
-                    QNUserScaleMp.setMeasureUserToUserDevice(mDevice, qnScaleUser)
-                } else {
-                    Log.e(TAG, "设备不支持设置测量用户")
-                    val qnUser = QNUser.build(
-                        userId,
-                        gender,
-                        age,
-                        height,
-                        false
-                    )
-                    QNScalePlugin.setMeasureUser(mDevice, qnUser)
-                }
+                setUser()
             }
 
             override fun onDisconnected(device: QNScaleDevice?) {
@@ -305,6 +259,22 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 Log.e(TAG, "同步用户结果，code = $code   user = $user")
                 if(code == 0){
                     insertOrUpdateDeviceUser(user, device)
+                }else if(code == 2003){
+                    // 用户密钥错误，说明秤可能把我们本地存的用户坑位给删了
+                    // 设置用户信息
+                    val user = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
+                        .userDao().getUser()
+                    val deviceUsers = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
+                        .deviceUserDao().getDeviceUser(user?.userId?: "")
+                    if(deviceUsers != null){
+                        deviceUsers.forEach {
+                            if(it.mac == mDevice?.mac){
+                                mDeviceUserDao.delete(it)
+                                setUser()
+                                return@forEach
+                            }
+                        }
+                    }
                 }else {
                     mViewModel.vState.value = QNScaleViewModel.MeasureState.USER_REGISTER_OR_VISIT_FAIL
                 }
@@ -412,6 +382,58 @@ class QNScaleMeasureActivity : ComponentActivity() {
             }
 
         })
+    }
+
+    private fun setUser(){
+        if(mDevice == null){
+            return
+        }
+        // 设置用户信息
+        val user = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
+            .userDao().getUser()
+        val deviceUsers = DemoDataBase.getInstance(this@QNScaleMeasureActivity)
+            .deviceUserDao().getDeviceUser(user?.userId?: "")
+        var deviceUser: DeviceUser? = null
+        if(deviceUsers != null){
+            deviceUsers.forEach {
+                if(it.mac == mDevice?.mac){
+                    deviceUser = it
+                }
+            }
+        }
+        val userId = user.userId
+        val gender = if(user.gender == "MALE") QNGender.MALE else QNGender.FEMALE
+        val age = user.age
+        val height = user.height
+
+        if(mDevice?.supportScaleUser == true){
+            /** 设置测量用户 start **/
+            val index = deviceUser?.index ?: 0
+            val key =  deviceUser?.key ?: 1000
+            val isVisitorMode = deviceUser?.isVisitorMode == true
+            val qnScaleUser = QNScaleUser.build(
+                userId,
+                gender,
+                age,
+                height,
+                false,
+                index,
+                key,
+                isVisitorMode
+            )
+            Log.e(TAG, "设置测量用户，user = $qnScaleUser")
+            QNUserScaleMp.setMeasureUserToUserDevice(mDevice, qnScaleUser)
+        } else {
+            Log.e(TAG, "设备不支持设置测量用户")
+            val qnUser = QNUser.build(
+                userId,
+                gender,
+                age,
+                height,
+                false
+            )
+            QNScalePlugin.setMeasureUser(mDevice, qnUser)
+        }
     }
 
     private fun insertOrUpdateDeviceUser(user: QNScaleUser?, device: QNScaleDevice?){
