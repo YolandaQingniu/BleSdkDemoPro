@@ -56,8 +56,6 @@ import com.qingniu.qnscaleplugin.model.*
 import java.text.DecimalFormat
 
 class QNScaleMeasureActivity : ComponentActivity() {
-    // 是否正在连接设备
-    private var mIsConnecting = false
     // 是否已经连接设备
     private var mIsConnected = false
 
@@ -186,13 +184,15 @@ class QNScaleMeasureActivity : ComponentActivity() {
 //                ){
 //                    return
 //                }
-                if(mIsConnected) return
+                if(mIsConnected || mViewModel.vState.value == QNScaleViewModel.MeasureState.CONNECTING){
+                    return
+                }
                 QNPlugin.getInstance(this@QNScaleMeasureActivity).stopScan()
                 device.let {
                     val op = QNScaleOperate()
                     op.unit = mCurWeightUnit
                     Log.e(TAG, "连接设备")
-                    mIsConnecting = true
+                    mViewModel.vState.value = QNScaleViewModel.MeasureState.CONNECTING
                     QNScalePlugin.connectDevice(device, op)
                 }
             }
@@ -206,14 +206,12 @@ class QNScaleMeasureActivity : ComponentActivity() {
         QNScalePlugin.setStatusListener(object : QNScaleStatusListener {
             override fun onConnectedSuccess(device: QNScaleDevice?) {
                 Log.e(TAG, "设备连接成功")
-                mIsConnecting = false
                 mIsConnected = true
                 mViewModel.vState.value = QNScaleViewModel.MeasureState.CONNECT
             }
 
             override fun onConnectFail(code: Int, device: QNScaleDevice?) {
                 Log.e(TAG, "设备连接失败")
-                mIsConnecting = false
                 mIsConnected = false
                 mViewModel.vState.value = QNScaleViewModel.MeasureState.DISCONNECT
             }
@@ -479,7 +477,7 @@ class QNScaleMeasureActivity : ComponentActivity() {
 }
 
 fun createQNScaleWeightStr(weight: Double, unit: QNWeightUnit): String{
-    val format = DecimalFormat("0.0")
+    val format = DecimalFormat(weight.toString())
     when(unit){
         QNWeightUnit.UNIT_KG -> {
             return "${format.format(weight)} KG"
@@ -503,7 +501,7 @@ fun createQNScaleWeightStr(weight: Double, unit: QNWeightUnit): String{
 }
 
 fun createQNScaleHeightStr(height: Int, unit: QNLengthUnit): String{
-    val format = DecimalFormat("0.0")
+    val format = DecimalFormat(height.toString())
     when(unit){
         QNLengthUnit.UNIT_CM -> {
             return "${format.format(height)} CM"
@@ -533,6 +531,7 @@ fun QNScaleStatusBar() {
     } else {
         when (hsvm.vState.value) {
             QNScaleViewModel.MeasureState.CONNECT -> "Connected"
+            QNScaleViewModel.MeasureState.CONNECTING -> "Connecting"
             QNScaleViewModel.MeasureState.DISCONNECT -> "Disconnected"
             QNScaleViewModel.MeasureState.USER_REGISTER_OR_VISIT_FAIL -> "User register or visit fail"
             QNScaleViewModel.MeasureState.MEASURE_ING -> "Measure ing"
@@ -805,7 +804,7 @@ fun QNScaleIndicator(
 class QNScaleViewModel : ViewModel() {
 
     enum class MeasureState {
-        CONNECT, DISCONNECT, USER_REGISTER_OR_VISIT_FAIL, MEASURE_ING, MEASURE_END, MEASURE_FAIL
+        CONNECT, CONNECTING, DISCONNECT, USER_REGISTER_OR_VISIT_FAIL, MEASURE_ING, MEASURE_END, MEASURE_FAIL
     }
 
     var mac: MutableState<String> = mutableStateOf("")
