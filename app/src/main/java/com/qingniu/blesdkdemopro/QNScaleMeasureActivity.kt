@@ -59,8 +59,6 @@ class QNScaleMeasureActivity : ComponentActivity() {
     // 是否已经连接设备
     private var mIsConnected = false
 
-    private var mWillDeleteDeviceUSer: DeviceUser? = null
-
     private val mDeviceUserDao by lazy {
         DemoDataBase.getInstance(this@QNScaleMeasureActivity).deviceUserDao()
     }
@@ -170,20 +168,6 @@ class QNScaleMeasureActivity : ComponentActivity() {
         QNScalePlugin.setDeviceListener(object : QNScaleDeviceListener {
             override fun onDiscoverScaleDevice(device: QNScaleDevice?) {
                 Log.e(TAG, "发现设备，mac = ${device?.mac} ")
-//                if(mIsConecting || (
-//                            device?.mac != "5C:D6:1F:EB:68:50"
-//                            && device?.mac != "F0:FE:6B:CB:8A:C8"
-//                            && device?.mac != "FF:01:00:00:18:08"
-//                            && device?.mac != "ED:67:37:11:B3:AC"
-//                            && device?.mac != "ED:67:37:27:F0:4D"
-//                            && device?.mac != "A1:7C:08:A6:A8:5F"
-//                            && device?.mac != "F0:08:D1:B2:F3:CA"
-//                            && device?.mac != "C4:5B:BE:B8:D0:1A"
-//                            && device?.mac != "C4:DD:57:EC:2F:9A"
-//                            && device?.mac != "C7:C7:63:DF:FF:78")
-//                ){
-//                    return
-//                }
                 if(mIsConnected || mViewModel.vState.value == QNScaleViewModel.MeasureState.CONNECTING){
                     return
                 }
@@ -219,7 +203,7 @@ class QNScaleMeasureActivity : ComponentActivity() {
             override fun onReadyInteractResult(device: QNScaleDevice?) {
                 Log.e(TAG, "设备允许交互")
                 mDevice = device
-                mViewModel.mac.value = mDevice?.mac ?: ""
+                mViewModel.mac.value = device?.mac ?: ""
                 setUser()
             }
 
@@ -237,7 +221,7 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 device: QNScaleDevice?
             ) {
                 if(code == 0){
-                    Log.e(TAG, "注册用户成功   user = $user")
+                    Log.e(TAG, "注册用户成功   user = $user    device = $device")
                     // 保存坑位和key到sp
                     insertOrUpdateDeviceUser(user, device)
                 }else {
@@ -254,7 +238,7 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 user: QNScaleUser?,
                 device: QNScaleDevice?
             ) {
-                Log.e(TAG, "同步用户结果，code = $code   user = $user")
+                Log.e(TAG, "同步用户结果，code = $code   user = $user    device = $device")
                 if(code == 0){
                     insertOrUpdateDeviceUser(user, device)
                 }else if(code == 2003){
@@ -282,12 +266,6 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 val msg = if(code == 0) "删除用户成功" else "删除用户失败，code = $code"
                 Log.e(TAG, msg)
                 Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
-                if(code == 0){
-                    val dao = DemoDataBase.getInstance(this@QNScaleMeasureActivity).deviceUserDao()
-                    if(mWillDeleteDeviceUSer != null) dao.delete(mWillDeleteDeviceUSer!!)
-                }
-                mWillDeleteDeviceUSer = null
-                LocalBroadcastManager.getInstance(this@QNScaleMeasureActivity).sendBroadcast(Intent("update_bind_devices"))
             }
 
         })
@@ -445,8 +423,10 @@ class QNScaleMeasureActivity : ComponentActivity() {
                     val updateUser = filterUsers.get(0)
                     updateUser.index = user.index
                     updateUser.isVisitorMode = user.isVisitorMode
-                    updateUser.isSupportUser = device?.supportScaleUser == true
-                    updateUser.isSupportWifi = device?.supportWiFi == true
+                    if (device != null) {
+                        updateUser.isSupportUser = device.supportScaleUser
+                        updateUser.isSupportWifi = device.supportWiFi
+                    }
                     Log.e(TAG, "update device user, $updateUser")
                     dao.update(updateUser)
                     return
@@ -466,8 +446,10 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 insertUser.key = user.key
                 insertUser.userId = user.userid
                 insertUser.isVisitorMode = user.isVisitorMode
-                insertUser.isSupportUser = it.supportScaleUser
-                insertUser.isSupportWifi = it.supportWiFi
+                if (it != null) {
+                    insertUser.isSupportUser = it.supportScaleUser
+                    insertUser.isSupportWifi = it.supportWiFi
+                }
                 Log.e(TAG, "insert device user, $insertUser")
                 dao.insert(insertUser)
             }

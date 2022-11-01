@@ -229,20 +229,6 @@ class QNScalePairNetActivity : ComponentActivity() {
         QNScalePlugin.setDeviceListener(object : QNScaleDeviceListener {
             override fun onDiscoverScaleDevice(device: QNScaleDevice?) {
                 Log.e(TAG, "Discover scale，mac = ${device?.mac} ")
-//                if (mIsConnecting || (
-//                            device?.mac != "5C:D6:1F:EB:68:50"
-//                                    && device?.mac != "F0:FE:6B:CB:8A:C8"
-//                                    && device?.mac != "FF:01:00:00:18:08"
-//                                    && device?.mac != "ED:67:37:11:B3:AC"
-//                                    && device?.mac != "ED:67:37:27:F0:4D"
-//                                    && device?.mac != "A1:7C:08:A6:A8:5F"
-//                                    && device?.mac != "F0:08:D1:B2:F3:CA"
-//                                    && device?.mac != "C4:5B:BE:B8:D0:1A"
-//                                    && device?.mac != "C4:DD:57:EC:2F:9A"
-//                                    && device?.mac != "C7:C7:63:DF:FF:78")
-//                ) {
-//                    return
-//                }
                 if(mIsConnected){
                     return
                 }
