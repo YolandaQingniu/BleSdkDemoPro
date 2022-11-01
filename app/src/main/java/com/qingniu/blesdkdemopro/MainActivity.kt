@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .background(BgGrey)
                     ) {
-                        TitleBar("Device Type", true)
+                        TitleBar("Device Type", false)
                         Column(Modifier.align(Alignment.Center)) {
                             val ctx = LocalContext.current
                             Card(Modifier.clickable {
@@ -63,6 +63,22 @@ class MainActivity : ComponentActivity() {
                                 ) {
                                     Text(
                                         text = "Ruler",
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+                            }
+
+                            Card(Modifier.padding(top = 20.dp).clickable {
+                                ctx.startActivity(QNScaleMeasureActivity.getCallIntent(ctx))
+                            }) {
+                                Box(
+                                    Modifier
+                                        .width(200.dp)
+                                        .height(40.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "QNScale",
                                         textAlign = TextAlign.Center,
                                     )
                                 }

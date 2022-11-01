@@ -12,11 +12,21 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "USER")
 class User {
     @PrimaryKey(autoGenerate = true)
-    var id = 0
+    var id: Long = 0
+
+    @ColumnInfo(name = "userId", defaultValue = "")
+    var userId: String = ""
 
     @ColumnInfo(name = "gender", defaultValue = "MALE")
     lateinit var gender: String
 
     @ColumnInfo(name = "age", defaultValue = "30")
     var age: Int = 30
+
+    @ColumnInfo(name = "height", defaultValue = "180")
+    var height: Int = 180
+
+    @ColumnInfo(name = "isCurrent", defaultValue = "false")
+    var isCurrent: Boolean = false
+
 }

@@ -29,6 +29,7 @@ if (USE_BLE_TYPE as int == 0) {
     include ':qnheightweightscalepluginX'
     include ':qnalgorithmpluginX'
     include ':qnrulerpluginX'
+    include ':qnscalepluginX'
 } else if (USE_BLE_TYPE as int == 2) {
     //基础SDK
     include ':qnplugin'
@@ -51,4 +52,16 @@ if (USE_BLE_TYPE as int == 0) {
     project(":qnrulerplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnrulerplugin')
     include ':tape'
     project(":tape").projectDir = new File(rootProject.projectDir, '../BleLibPro/tape')
+
+    //家用秤
+    include ':qnscaleplugin'
+    project(":qnscaleplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnscaleplugin')
+    include ':wspscale'
+    project(":wspscale").projectDir = new File(rootProject.projectDir, '../BleLibPro/wspscale')
+    include ':normalscale'
+    project(":normalscale").projectDir = new File(rootProject.projectDir, '../BleLibPro/normalscale')
+    include ':vascale'
+    project(":vascale").projectDir = new File(rootProject.projectDir, '../BleLibPro/vascale')
+    include ':broadcastscale'
+    project(":broadcastscale").projectDir = new File(rootProject.projectDir, '../BleLibPro/broadcastscale')
 }

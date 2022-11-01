@@ -41,6 +41,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BleSdkDemoPro"
         tools:replace="android:theme"
+        android:testOnly="false"
         tools:targetApi="31">
         <activity
             android:name=".UserSettingActivity"
@@ -58,6 +59,21 @@
             android:label="@string/title_activity_tape_measure"
             android:theme="@style/Theme.BleSdkDemoPro" />
         <activity
+            android:name=".QNScaleMeasureActivity"
+            android:exported="false"
+            android:label="@string/title_activity_qnscale_measure"
+            android:theme="@style/Theme.BleSdkDemoPro" />
+        <activity
+            android:name=".WifiSettingActivity"
+            android:exported="false"
+            android:label="@string/title_activity_wifi_setting"
+            android:theme="@style/Theme.BleSdkDemoPro" />
+        <activity
+            android:name=".QNScalePairNetActivity"
+            android:exported="false"
+            android:label="@string/title_activity_qnscale_pair_net_setting"
+            android:theme="@style/Theme.BleSdkDemoPro" />
+        <activity
             android:name=".UnitSelectActivity"
             android:exported="false"
             android:label="@string/title_activity_unit_select"
@@ -66,6 +82,16 @@
             android:name=".SettingActivity"
             android:exported="false"
             android:label="@string/title_activity_setting"
+            android:theme="@style/Theme.BleSdkDemoPro" />
+        <activity
+            android:name=".BindDevicesActivity"
+            android:exported="false"
+            android:label="@string/title_activity_bind_devices"
+            android:theme="@style/Theme.BleSdkDemoPro" />
+        <activity
+            android:name=".DeviceUserManageActivity"
+            android:exported="false"
+            android:label="@string/title_activity_device_user_manage"
             android:theme="@style/Theme.BleSdkDemoPro" />
         <activity
             android:name=".MainActivity"
