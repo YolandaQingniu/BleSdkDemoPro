@@ -11,8 +11,8 @@ android {
         applicationId "com.qingniu.blesdkdemopro"
         minSdk 21
         targetSdk 32
-        versionCode 1
-        versionName "1.1.0"
+        versionCode 2
+        versionName "1.2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -102,6 +102,7 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
     // optional - Test helpers
     testImplementation("androidx.room:room-testing:$room_version")
+    implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.0.0@aar")
 
 
     if (USE_BLE_TYPE as int == 0) {
@@ -109,11 +110,13 @@ dependencies {
         implementation project(':qnheightweightscalepluginX')
         implementation project(':qnalgorithmpluginX')
         implementation project(':qnrulerpluginX')
+        implementation project(':qnscalepluginX')
     } else if (USE_BLE_TYPE as int == 1) {
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnpluginX:1.1.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnheightweightscalepluginX:1.1.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnalgorithmpluginX:1.1.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnrulerpluginX:1.1.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnpluginX:1.2.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnheightweightscalepluginX:1.2.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnalgorithmpluginX:1.2.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnrulerpluginX:1.2.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnscalepluginX:1.2.0"
     } else if (USE_BLE_TYPE as int == 2) {
         implementation project(':qnplugin')
         implementation project(':qnheightweightscaleplugin')

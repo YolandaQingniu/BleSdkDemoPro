@@ -29,6 +29,7 @@ if (USE_BLE_TYPE as int == 0) {
     include ':qnheightweightscalepluginX'
     include ':qnalgorithmpluginX'
     include ':qnrulerpluginX'
+    include ':qnscalepluginX'
 } else if (USE_BLE_TYPE as int == 2) {
     //基础SDK
     include ':qnplugin'
@@ -52,7 +53,7 @@ if (USE_BLE_TYPE as int == 0) {
     include ':tape'
     project(":tape").projectDir = new File(rootProject.projectDir, '../BleLibPro/tape')
 
-    //普通蓝牙秤
+    //家用秤
     include ':qnscaleplugin'
     project(":qnscaleplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnscaleplugin')
     include ':wspscale'

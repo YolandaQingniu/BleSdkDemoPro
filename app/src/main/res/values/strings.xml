@@ -4,5 +4,11 @@
     <string name="title_activity_unit_select">UnitSelectActivity</string>
     <string name="title_activity_height_measure">HeightMeasureActivity</string>
     <string name="title_activity_tape_measure">TapeMeasureActivity</string>
+    <string name="title_activity_qnscale_measure">QNScaleMeasureActivity</string>
     <string name="title_activity_user_setting">UserSettingActivity</string>
+    <string name="title_activity_wifi_setting">WifiSettingActivity</string>
+    <string name="title_activity_qnscale_pair_net_setting">QNScalePairNetActivity</string>
+    <string name="title_activity_bind_devices">BindDevicesActivity</string>
+    <string name="title_activity_device_user_manage">DeviceUserManageActivity</string>
+
 </resources>
