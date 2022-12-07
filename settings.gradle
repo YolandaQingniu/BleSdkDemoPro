@@ -64,4 +64,10 @@ if (USE_BLE_TYPE as int == 0) {
     project(":vascale").projectDir = new File(rootProject.projectDir, '../BleLibPro/vascale')
     include ':broadcastscale'
     project(":broadcastscale").projectDir = new File(rootProject.projectDir, '../BleLibPro/broadcastscale')
+
+    // 厨房秤
+    include ':qnkitchenplugin'
+    project(":qnkitchenplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnkitchenplugin')
+    include ':kitchenscale'
+    project(":kitchenscale").projectDir = new File(rootProject.projectDir, '../BleLibPro/kitchenscale')
 }
