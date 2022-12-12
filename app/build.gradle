@@ -106,22 +106,22 @@ dependencies {
 
 
     if (USE_BLE_TYPE as int == 0) {
-        implementation project(':qnpluginX')
-        implementation project(':qnheightweightscalepluginX')
-        implementation project(':qnalgorithmpluginX')
-        implementation project(':qnrulerpluginX')
-        implementation project(':qnscalepluginX')
+        implementation project(':qnPluginX')
+        implementation project(':qnHeightWeightScalePluginX')
+        implementation project(':qnAlgorithmPluginX')
+        implementation project(':qnRulerPluginX')
+        implementation project(':qnScalePluginX')
     } else if (USE_BLE_TYPE as int == 1) {
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnpluginX:1.2.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnheightweightscalepluginX:1.2.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnalgorithmpluginX:1.2.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnrulerpluginX:1.2.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnscalepluginX:1.2.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnPluginX:1.2.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnHeightWeightScalePluginX:1.2.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnAlgorithmPluginX:1.2.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnRulerPluginX:1.2.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnScalePluginX:1.2.0"
     } else if (USE_BLE_TYPE as int == 2) {
-        implementation project(':qnplugin')
-        implementation project(':qnheightweightscaleplugin')
-        implementation project(':qnalgorithmplugin')
-        implementation project(':qnrulerplugin')
-        implementation project(':qnscaleplugin')
+        implementation project(':qnPlugin')
+        implementation project(':qnHeightWeightScalePlugin')
+        implementation project(':qnAlgorithmPlugin')
+        implementation project(':qnRulerPlugin')
+        implementation project(':qnScalePlugin')
     }
 }

@@ -25,43 +25,43 @@ rootProject.name = "BleSdkDemoPro"
 include ':app'
 
 if (USE_BLE_TYPE as int == 0) {
-    include ':qnpluginX'
-    include ':qnheightweightscalepluginX'
-    include ':qnalgorithmpluginX'
-    include ':qnrulerpluginX'
-    include ':qnscalepluginX'
+    include ':qnPluginX'
+    include ':qnHeightWeightScalePluginX'
+    include ':qnAlgorithmPluginX'
+    include ':qnRulerPluginX'
+    include ':qnScalePluginX'
 } else if (USE_BLE_TYPE as int == 2) {
     //基础SDK
-    include ':qnplugin'
-    project(":qnplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnplugin')
-    include ':blecenter'
-    project(":blecenter").projectDir = new File(rootProject.projectDir, '../BleLibPro/blecenter')
+    include ':qnPlugin'
+    project(":qnPlugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnPlugin')
+    include ':bleCenter'
+    project(":bleCenter").projectDir = new File(rootProject.projectDir, '../BleLibPro/bleCenter')
 
     //算法库
-    include ':qnalgorithmplugin'
-    project(":qnalgorithmplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnalgorithmplugin')
+    include ':qnAlgorithmPlugin'
+    project(":qnAlgorithmPlugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnAlgorithmPlugin')
 
     //身高体重秤
-    include ':qnheightweightscaleplugin'
-    project(":qnheightweightscaleplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnheightweightscaleplugin')
-    include ':heightscale'
-    project(":heightscale").projectDir = new File(rootProject.projectDir, '../BleLibPro/heightscale')
+    include ':qnHeightWeightScalePlugin'
+    project(":qnHeightWeightScalePlugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnHeightWeightScalePlugin')
+    include ':heightScale'
+    project(":heightScale").projectDir = new File(rootProject.projectDir, '../BleLibPro/heightScale')
 
     //围度尺
-    include ':qnrulerplugin'
-    project(":qnrulerplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnrulerplugin')
+    include ':qnRulerPlugin'
+    project(":qnRulerPlugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnRulerPlugin')
     include ':tape'
     project(":tape").projectDir = new File(rootProject.projectDir, '../BleLibPro/tape')
 
     //家用秤
-    include ':qnscaleplugin'
-    project(":qnscaleplugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnscaleplugin')
-    include ':wspscale'
-    project(":wspscale").projectDir = new File(rootProject.projectDir, '../BleLibPro/wspscale')
-    include ':normalscale'
-    project(":normalscale").projectDir = new File(rootProject.projectDir, '../BleLibPro/normalscale')
-    include ':vascale'
-    project(":vascale").projectDir = new File(rootProject.projectDir, '../BleLibPro/vascale')
-    include ':broadcastscale'
-    project(":broadcastscale").projectDir = new File(rootProject.projectDir, '../BleLibPro/broadcastscale')
+    include ':qnScalePlugin'
+    project(":qnScalePlugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnScalePlugin')
+    include ':wspScale'
+    project(":wspScale").projectDir = new File(rootProject.projectDir, '../BleLibPro/wspScale')
+    include ':normalScale'
+    project(":normalScale").projectDir = new File(rootProject.projectDir, '../BleLibPro/normalScale')
+    include ':vaScale'
+    project(":vaScale").projectDir = new File(rootProject.projectDir, '../BleLibPro/vaScale')
+    include ':broadcastScale'
+    project(":broadcastScale").projectDir = new File(rootProject.projectDir, '../BleLibPro/broadcastScale')
 }
