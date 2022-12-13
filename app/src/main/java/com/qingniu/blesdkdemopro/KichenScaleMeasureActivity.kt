@@ -89,9 +89,6 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
         QNKitchenPlugin.setDeviceListener(object : QNKitchenScaleDeviceListener {
             override fun onDiscoverKitchenScaleDevice(device: QNKitchenScaleDevice?) {
                 Log.e(QNScaleMeasureActivity.TAG, "发现设备，mac = ${device?.mac} ")
-                if(device?.mac != "FF:F2:00:08:95:BD" || mIsConnected || mViewModel.vState.value == KitchenScaleViewModel.MeasureState.CONNECTING){
-                    return
-                }
                 QNPlugin.getInstance(this@KitchenScaleMeasureActivity).stopScan()
                 device.let {
                     Log.e(TAG, "连接设备")
@@ -145,7 +142,7 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
                     Log.e(TAG, "设备允许交互")
                     mDevice.value = device
                     mViewModel.supportUnitList.value.clear()
-                    mDevice.value?.supportUnitList?.forEach {
+                    mDevice.value?.deviceUnitSupportedList?.forEach {
                         mViewModel.supportUnitList.value.add(it)
                     }
 
