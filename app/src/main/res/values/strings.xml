@@ -10,5 +10,6 @@
     <string name="title_activity_qnscale_pair_net_setting">QNScalePairNetActivity</string>
     <string name="title_activity_bind_devices">BindDevicesActivity</string>
     <string name="title_activity_device_user_manage">DeviceUserManageActivity</string>
+    <string name="title_activity_kitchen_measure">KitchenScaleMeasureActivity</string>
 
 </resources>

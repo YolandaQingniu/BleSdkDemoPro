@@ -123,5 +123,6 @@ dependencies {
         implementation project(':qnAlgorithmPlugin')
         implementation project(':qnRulerPlugin')
         implementation project(':qnScalePlugin')
+        implementation project(':qnKitchenPlugin')
     }
 }

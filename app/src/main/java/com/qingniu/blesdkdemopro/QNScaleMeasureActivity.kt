@@ -594,142 +594,142 @@ fun QNScaleMeasureBoard() {
                             QNScaleIndicator("timeStamp", hsvm.timestamp.value, false)
                         }
                         if (!TextUtils.isEmpty(hsvm.bodyFatRate.value)) {
-                            Indicator("bodyFatRate", hsvm.bodyFatRate.value, true)
+                            QNScaleIndicator("bodyFatRate", hsvm.bodyFatRate.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.subcutaneousFatRate.value)) {
-                            Indicator("subcutaneousFatRate", hsvm.subcutaneousFatRate.value, true)
+                            QNScaleIndicator("subcutaneousFatRate", hsvm.subcutaneousFatRate.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.visceralFatLevel.value)) {
-                            Indicator("visceralFatLevel", hsvm.visceralFatLevel.value, true)
+                            QNScaleIndicator("visceralFatLevel", hsvm.visceralFatLevel.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.bodyWaterRate.value)) {
-                            Indicator("bodyWaterRate", hsvm.bodyWaterRate.value, true)
+                            QNScaleIndicator("bodyWaterRate", hsvm.bodyWaterRate.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.skeletalMuscleRate.value)) {
-                            Indicator("skeletalMuscleRate", hsvm.skeletalMuscleRate.value, true)
+                            QNScaleIndicator("skeletalMuscleRate", hsvm.skeletalMuscleRate.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.boneMass.value)) {
-                            Indicator("boneMass", hsvm.boneMass.value, true)
+                            QNScaleIndicator("boneMass", hsvm.boneMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.BMR.value)) {
-                            Indicator("BMR", hsvm.BMR.value, true)
+                            QNScaleIndicator("BMR", hsvm.BMR.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.bodyType.value)) {
-                            Indicator("bodyType", hsvm.bodyType.value, true)
+                            QNScaleIndicator("bodyType", hsvm.bodyType.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.proteinRate.value)) {
-                            Indicator("proteinRate", hsvm.proteinRate.value, true)
+                            QNScaleIndicator("proteinRate", hsvm.proteinRate.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.leanBodyMass.value)) {
-                            Indicator("leanBodyMass", hsvm.leanBodyMass.value, true)
+                            QNScaleIndicator("leanBodyMass", hsvm.leanBodyMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.muscleMass.value)) {
-                            Indicator("muscleMass", hsvm.muscleMass.value, true)
+                            QNScaleIndicator("muscleMass", hsvm.muscleMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.bodyAge.value)) {
-                            Indicator("bodyAge", hsvm.bodyAge.value, true)
+                            QNScaleIndicator("bodyAge", hsvm.bodyAge.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.healthScore.value)) {
-                            Indicator("healthScore", hsvm.healthScore.value, true)
+                            QNScaleIndicator("healthScore", hsvm.healthScore.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.heartRate.value)) {
-                            Indicator("heartRate", hsvm.heartRate.value, true)
+                            QNScaleIndicator("heartRate", hsvm.heartRate.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.heartIndex.value)) {
-                            Indicator("heartIndex", hsvm.heartIndex.value, true)
+                            QNScaleIndicator("heartIndex", hsvm.heartIndex.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.fattyLiverRiskLevel.value)) {
-                            Indicator("fattyLiverRiskLevel", hsvm.fattyLiverRiskLevel.value, true)
+                            QNScaleIndicator("fattyLiverRiskLevel", hsvm.fattyLiverRiskLevel.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.res50KHZ.value)) {
-                            Indicator("res50KHZ", hsvm.res50KHZ.value, true)
+                            QNScaleIndicator("res50KHZ", hsvm.res50KHZ.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.res500KHZ.value)) {
-                            Indicator("res500KHZ", hsvm.res500KHZ.value, true)
+                            QNScaleIndicator("res500KHZ", hsvm.res500KHZ.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.bodyFatMass.value)) {
-                            Indicator("bodyFatMass", hsvm.bodyFatMass.value, true)
+                            QNScaleIndicator("bodyFatMass", hsvm.bodyFatMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.obesity.value)) {
-                            Indicator("obesity", hsvm.obesity.value, true)
+                            QNScaleIndicator("obesity", hsvm.obesity.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.bodyWaterMass.value)) {
-                            Indicator("bodyWaterMass", hsvm.bodyWaterMass.value, true)
+                            QNScaleIndicator("bodyWaterMass", hsvm.bodyWaterMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.proteinMass.value)) {
-                            Indicator("proteinMass", hsvm.proteinMass.value, true)
+                            QNScaleIndicator("proteinMass", hsvm.proteinMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.mineralLevel.value)) {
-                            Indicator("mineralLevel", hsvm.mineralLevel.value, true)
+                            QNScaleIndicator("mineralLevel", hsvm.mineralLevel.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.dreamWeight.value)) {
-                            Indicator("dreamWeight", hsvm.dreamWeight.value, true)
+                            QNScaleIndicator("dreamWeight", hsvm.dreamWeight.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.standWeight.value)) {
-                            Indicator("standWeight", hsvm.standWeight.value, true)
+                            QNScaleIndicator("standWeight", hsvm.standWeight.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.weightControl.value)) {
-                            Indicator("weightControl", hsvm.weightControl.value, true)
+                            QNScaleIndicator("weightControl", hsvm.weightControl.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.bodyFatControl.value)) {
-                            Indicator("bodyFatControl", hsvm.bodyFatControl.value, true)
+                            QNScaleIndicator("bodyFatControl", hsvm.bodyFatControl.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.muscleMassControl.value)) {
-                            Indicator("muscleMassControl", hsvm.muscleMassControl.value, true)
+                            QNScaleIndicator("muscleMassControl", hsvm.muscleMassControl.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.muscleRate.value)) {
-                            Indicator("muscleRate", hsvm.muscleRate.value, true)
+                            QNScaleIndicator("muscleRate", hsvm.muscleRate.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.leftArmBodyfatRate.value)) {
-                            Indicator("leftArmBodyfatRate", hsvm.leftArmBodyfatRate.value, true)
+                            QNScaleIndicator("leftArmBodyfatRate", hsvm.leftArmBodyfatRate.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.leftLegBodyfatRate.value)) {
-                            Indicator("leftLegBodyfatRate", hsvm.leftLegBodyfatRate.value, true)
+                            QNScaleIndicator("leftLegBodyfatRate", hsvm.leftLegBodyfatRate.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.rightArmBodyfatRate.value)) {
-                            Indicator("rightArmBodyfatRate", hsvm.rightArmBodyfatRate.value, true)
+                            QNScaleIndicator("rightArmBodyfatRate", hsvm.rightArmBodyfatRate.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.rightLegBodyfatRate.value)) {
-                            Indicator("rightLegBodyfatRate", hsvm.rightLegBodyfatRate.value, true)
+                            QNScaleIndicator("rightLegBodyfatRate", hsvm.rightLegBodyfatRate.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.trunkBodyfatRate.value)) {
-                            Indicator("trunkBodyfatRate", hsvm.trunkBodyfatRate.value, true)
+                            QNScaleIndicator("trunkBodyfatRate", hsvm.trunkBodyfatRate.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.leftArmFatMass.value)) {
-                            Indicator("leftArmFatMass", hsvm.leftArmFatMass.value, true)
+                            QNScaleIndicator("leftArmFatMass", hsvm.leftArmFatMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.leftLegFatMass.value)) {
-                            Indicator("leftLegFatMass", hsvm.leftLegFatMass.value, true)
+                            QNScaleIndicator("leftLegFatMass", hsvm.leftLegFatMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.rightArmFatMass.value)) {
-                            Indicator("rightArmFatMass", hsvm.rightArmFatMass.value, true)
+                            QNScaleIndicator("rightArmFatMass", hsvm.rightArmFatMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.rightLegFatMass.value)) {
-                            Indicator("rightLegFatMass", hsvm.rightLegFatMass.value, true)
+                            QNScaleIndicator("rightLegFatMass", hsvm.rightLegFatMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.trunkFatMass.value)) {
-                            Indicator("trunkFatMass", hsvm.trunkFatMass.value, true)
+                            QNScaleIndicator("trunkFatMass", hsvm.trunkFatMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.leftArmMuscleMass.value)) {
-                            Indicator("leftArmMuscleMass", hsvm.leftArmMuscleMass.value, true)
+                            QNScaleIndicator("leftArmMuscleMass", hsvm.leftArmMuscleMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.leftLegMuscleMass.value)) {
-                            Indicator("leftLegMuscleMass", hsvm.leftLegMuscleMass.value, true)
+                            QNScaleIndicator("leftLegMuscleMass", hsvm.leftLegMuscleMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.rightArmMuscleMass.value)) {
-                            Indicator("rightArmMuscleMass", hsvm.rightArmMuscleMass.value, true)
+                            QNScaleIndicator("rightArmMuscleMass", hsvm.rightArmMuscleMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.rightLegMuscleMass.value)) {
-                            Indicator("rightLegMuscleMass", hsvm.rightLegMuscleMass.value, true)
+                            QNScaleIndicator("rightLegMuscleMass", hsvm.rightLegMuscleMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.trunkMuscleMass.value)) {
-                            Indicator("trunkMuscleMass", hsvm.trunkMuscleMass.value, true)
+                            QNScaleIndicator("trunkMuscleMass", hsvm.trunkMuscleMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.skeletalMuscleMass.value)) {
-                            Indicator("skeletalMuscleMass", hsvm.skeletalMuscleMass.value, true)
+                            QNScaleIndicator("skeletalMuscleMass", hsvm.skeletalMuscleMass.value, true)
                         }
                         if (!TextUtils.isEmpty(hsvm.mineralSaltRate.value)) {
-                            Indicator("mineralSaltRate", hsvm.mineralSaltRate.value, true)
+                            QNScaleIndicator("mineralSaltRate", hsvm.mineralSaltRate.value, true)
                         }
                     }
                 }
