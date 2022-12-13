@@ -124,5 +124,6 @@ dependencies {
         implementation project(':qnRulerPlugin')
         implementation project(':qnScalePlugin')
         implementation project(':qnKitchenPlugin')
+        implementation project(':qnBPMachinePlugin')
     }
 }

@@ -70,4 +70,10 @@ if (USE_BLE_TYPE as int == 0) {
     project(":qnKitchenPlugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnKitchenPlugin')
     include ':kitchenScale'
     project(":kitchenScale").projectDir = new File(rootProject.projectDir, '../BleLibPro/kitchenScale')
+
+    //血压计
+    include ':qnBPMachinePlugin'
+    project(":qnBPMachinePlugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnBPMachinePlugin')
+    include ':bpMachine'
+    project(":bpMachine").projectDir = new File(rootProject.projectDir, '../BleLibPro/bpMachine')
 }
