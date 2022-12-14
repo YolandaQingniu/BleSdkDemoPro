@@ -79,7 +79,7 @@ class HeightMeasureActivity : ComponentActivity() {
                             .background(BgGrey)
                     ) {
                         TitleBar("Height Scale", true)
-                        StatusBar()
+                        HeightStatusBar()
                         MeasureBoard()
                     }
                 }
@@ -302,7 +302,7 @@ class HeightMeasureActivity : ComponentActivity() {
 }
 
 @Composable
-fun StatusBar() {
+fun HeightStatusBar() {
     val ctx = LocalContext.current
     val hsvm: HeightScaleViewModel = viewModel()
     val status = if (!DemoBleUtils.isBlueToothSwitchOn(ctx)) {

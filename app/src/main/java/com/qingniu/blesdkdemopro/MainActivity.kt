@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .background(BgGrey)
                     ) {
-                        TitleBar("Device Type", false)
+                        TitleBar("Device Type", true)
                         Column(Modifier.align(Alignment.Center)) {
                             val ctx = LocalContext.current
                             Card(Modifier.clickable {
@@ -95,6 +95,22 @@ class MainActivity : ComponentActivity() {
                                 ) {
                                     Text(
                                         text = "KitchenScale",
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+                            }
+
+                            Card(Modifier.padding(top = 20.dp).clickable {
+                                ctx.startActivity(BPMachineMeasureActivity.getCallIntent(ctx))
+                            }) {
+                                Box(
+                                    Modifier
+                                        .width(200.dp)
+                                        .height(40.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "BPMachine",
                                         textAlign = TextAlign.Center,
                                     )
                                 }

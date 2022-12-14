@@ -16,25 +16,25 @@ class DeviceUser() : Parcelable {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 
-    @ColumnInfo(name = "mac", defaultValue = "")
+    @ColumnInfo(name = "MAC", defaultValue = "")
     var mac: String = ""
 
-    @ColumnInfo(name = "userId", defaultValue = "")
+    @ColumnInfo(name = "USERID", defaultValue = "")
     var userId: String = ""
 
-    @ColumnInfo(name = "index", defaultValue = "0")
+    @ColumnInfo(name = "INDEX", defaultValue = "0")
     var index: Int = 0
 
-    @ColumnInfo(name = "key", defaultValue = "0")
+    @ColumnInfo(name = "KEY", defaultValue = "0")
     var key: Int = 0
 
-    @ColumnInfo(name = "isVisitorMode", defaultValue = "false")
+    @ColumnInfo(name = "IS_VISITOR_MODE", defaultValue = "false")
     var isVisitorMode: Boolean = false
 
-    @ColumnInfo(name = "isSupportUser", defaultValue = "false")
+    @ColumnInfo(name = "IS_SUPPORT_USER", defaultValue = "false")
     var isSupportUser: Boolean = false
 
-    @ColumnInfo(name = "isSupportWifi", defaultValue = "false")
+    @ColumnInfo(name = "IS_SUPPORT_WIFI", defaultValue = "false")
     var isSupportWifi: Boolean = false
 
     constructor(parcel: Parcel) : this() {

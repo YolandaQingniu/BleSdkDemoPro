@@ -23,7 +23,7 @@ import com.qingniu.blesdkdemopro.ui.theme.DividerGrey
  */
 
 @Composable
-fun SelectUnitItem(
+fun SelectConfigItem(
     unit: String,
     showDivider: Boolean = true,
     checkState: () -> Boolean,

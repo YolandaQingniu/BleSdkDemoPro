@@ -12,26 +12,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import com.qingniu.blesdkdemopro.constant.DemoUnit
 import com.qingniu.blesdkdemopro.db.DemoDataBase
-import com.qingniu.blesdkdemopro.db.table.User
 import com.qingniu.blesdkdemopro.ui.theme.BgGrey
 import com.qingniu.blesdkdemopro.ui.theme.BleSdkDemoProTheme
 import com.qingniu.blesdkdemopro.ui.theme.DividerGrey
-import com.qingniu.blesdkdemopro.ui.widget.SelectUnitItem
+import com.qingniu.blesdkdemopro.ui.widget.SelectConfigItem
 import com.qingniu.blesdkdemopro.ui.widget.TitleBar
 
 class UserSettingActivity : ComponentActivity() {
@@ -112,13 +107,13 @@ class UserSettingActivity : ComponentActivity() {
                                 text = "Gender", fontSize = 16.sp,
                                 modifier = Modifier.padding(start = 10.dp, bottom = 10.dp)
                             )
-                            SelectUnitItem(unit = DemoUnit.MALE.showName, checkState = { gender.value == DemoUnit.MALE.showName }) {
+                            SelectConfigItem(unit = DemoUnit.MALE.showName, checkState = { gender.value == DemoUnit.MALE.showName }) {
                                 val user = dao.getUser().apply {
                                     this.gender = DemoUnit.MALE.showName
                                 }
                                 gender.value = user.gender
                             }
-                            SelectUnitItem(unit = DemoUnit.FEMALE.showName, checkState = { gender.value == DemoUnit.FEMALE.showName }) {
+                            SelectConfigItem(unit = DemoUnit.FEMALE.showName, checkState = { gender.value == DemoUnit.FEMALE.showName }) {
                                 val user = dao.getUser().apply {
                                     this.gender = DemoUnit.FEMALE.showName
                                 }
@@ -177,7 +172,7 @@ class UserSettingActivity : ComponentActivity() {
                                                 .height(1.dp)
                                                 .fillMaxWidth()
                                         )
-                                        SelectUnitItem(unit = "  ${item.id}          ${item.gender}     ${item.age}years    ${item.height}cm", checkState = { item.isCurrent }) {
+                                        SelectConfigItem(unit = "  ${item.id}          ${item.gender}     ${item.age}years    ${item.height}cm", checkState = { item.isCurrent }) {
                                             users.value.forEach {
                                                 it.isCurrent = false
                                                 if(it.id == item.id){

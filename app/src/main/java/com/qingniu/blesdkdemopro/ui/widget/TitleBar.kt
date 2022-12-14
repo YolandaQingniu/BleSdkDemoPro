@@ -50,8 +50,13 @@ fun TitleBar(title: String, showSetting: Boolean = false) {
     }
 }
 
+
+enum class SettingAction {
+    FULL, DISCONNECT, MEASURE_END, MEASURE_FAIL
+}
+
 @Preview(showSystemUi = false, showBackground = false)
 @Composable
-fun DefaultPreview() {
+fun PreviewTitleBar() {
     TitleBar("测试", true)
 }

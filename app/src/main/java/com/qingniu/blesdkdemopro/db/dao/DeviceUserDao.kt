@@ -24,6 +24,9 @@ interface DeviceUserDao {
     @Query("SELECT * FROM DEVICE_USER WHERE userId = :selectUserId")
     fun getDeviceUser(selectUserId: String): List<DeviceUser>
 
+    @Query("SELECT * FROM DEVICE_USER WHERE mac = :mac")
+    fun getMacDevice(mac: String): List<DeviceUser>
+
     @Query("SELECT * FROM DEVICE_USER")
     fun getAllDeviceUser(): List<DeviceUser>
 }

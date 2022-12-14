@@ -20,7 +20,7 @@ interface UserDao {
     @Update
     fun update(user: User)
 
-    @Query("SELECT * FROM USER WHERE isCurrent")
+    @Query("SELECT * FROM USER WHERE IS_CURRENT")
     fun getUser(): User
 
     @Query("SELECT * FROM USER")

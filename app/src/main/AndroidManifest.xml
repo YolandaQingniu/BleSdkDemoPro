@@ -4,7 +4,6 @@
     package="com.qingniu.blesdkdemopro">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission
         android:name="android.permission.BLUETOOTH"
         android:maxSdkVersion="30" />
@@ -39,10 +38,28 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:testOnly="false"
         android:theme="@style/Theme.BleSdkDemoPro"
         tools:replace="android:theme"
-        android:testOnly="false"
         tools:targetApi="31">
+        <activity
+            android:name=".BPMachineSettingActivity"
+            android:exported="false"
+            android:label="@string/title_activity_bpmachine_setting"
+            android:theme="@style/Theme.BleSdkDemoPro">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".BPMachineMeasureActivity"
+            android:exported="false"
+            android:label="@string/title_activity_bpmachine_measure"
+            android:theme="@style/Theme.BleSdkDemoPro">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".UserSettingActivity"
             android:exported="false"

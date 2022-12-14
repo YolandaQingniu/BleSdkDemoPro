@@ -14,9 +14,9 @@ class UnitSetting {
     @PrimaryKey(autoGenerate = true)
     var id = 0
 
-    @ColumnInfo(name = "weight_unit", defaultValue = "KG")
+    @ColumnInfo(name = "WEIGHT_UNIT", defaultValue = "KG")
     lateinit var weightUnit: String
 
-    @ColumnInfo(name = "length_unit", defaultValue = "CM")
+    @ColumnInfo(name = "LENGTH_UNIT", defaultValue = "CM")
     lateinit var lengthUnit: String
 }

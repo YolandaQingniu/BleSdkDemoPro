@@ -4,26 +4,25 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.qingniu.blesdkdemopro.db.dao.DeviceUserDao
-import com.qingniu.blesdkdemopro.db.dao.UnitSettingDao
-import com.qingniu.blesdkdemopro.db.dao.UserDao
-import com.qingniu.blesdkdemopro.db.dao.WifiInfoDao
-import com.qingniu.blesdkdemopro.db.table.DeviceUser
-import com.qingniu.blesdkdemopro.db.table.UnitSetting
-import com.qingniu.blesdkdemopro.db.table.User
-import com.qingniu.blesdkdemopro.db.table.WifiInfo
+import com.qingniu.blesdkdemopro.db.dao.*
+import com.qingniu.blesdkdemopro.db.table.*
+import com.qingniu.qnbpmachineplugin.QNBPMachineLanguage
+import com.qingniu.qnbpmachineplugin.QNBPMachineStandard
+import com.qingniu.qnbpmachineplugin.QNBPMachineUnit
+import com.qingniu.qnbpmachineplugin.QNBPMachineVolume
 
 /**
  * @Author: hyr
  * @Date: 2022/8/14 20:42
  * @Description:
  */
-@Database(entities = [UnitSetting::class, User::class, WifiInfo::class, DeviceUser::class], version = 1)
+@Database(entities = [UnitSetting::class, User::class, WifiInfo::class, DeviceUser::class,BPMachineSetting::class], version = 1)
 abstract class DemoDataBase : RoomDatabase() {
     abstract fun unitSettingDao(): UnitSettingDao
     abstract fun userDao(): UserDao
     abstract fun wifiInfoDao(): WifiInfoDao
     abstract fun deviceUserDao(): DeviceUserDao
+    abstract fun bpMachineSettingDao(): BPMachineSettingDao
 
     companion object {
         @Volatile
@@ -51,14 +50,23 @@ abstract class DemoDataBase : RoomDatabase() {
                             }
 
                             val defaultWifiInfo = WifiInfo().apply {
-                                ssid = "yolanda-qzx"
-                                password = "66666666"
+                                ssid = "K30P"
+                                password = "22223333"
                                 serverUrl = "http://wifi.yolanda.hk:80/wifi_api/wsps?device_type=7&code="
                             }
 
                             if(sInstance!!.unitSettingDao().getUnitSetting() == null) sInstance!!.unitSettingDao().insert(defaultUnit)
                             if(sInstance!!.userDao().getUser() == null) sInstance!!.userDao().insert(defaultUser)
                             if(sInstance!!.wifiInfoDao().getWifiInfo() == null) sInstance!!.wifiInfoDao().insert(defaultWifiInfo)
+
+                            if (null == sInstance!!.bpMachineSettingDao().getBPMachineSetting()){
+                                sInstance!!.bpMachineSettingDao().insert(BPMachineSetting().apply {
+                                    unit = QNBPMachineUnit.MMHG.toString()
+                                    volume = QNBPMachineVolume.THIRD_LEVEL.toString()
+                                    standard = QNBPMachineStandard.CHINA.toString()
+                                    language = QNBPMachineLanguage.CHINESE.toString()
+                                })
+                            }
                         }
                     }
                 }

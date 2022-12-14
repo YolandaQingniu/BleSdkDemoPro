@@ -2,6 +2,7 @@ package com.qingniu.blesdkdemopro
 
 import android.app.Application
 import android.util.Log
+import com.qingniu.blesdkdemopro.db.DemoDataBase
 import com.qingniu.qnplugin.QNPlugin
 
 /**
@@ -12,6 +13,8 @@ import com.qingniu.qnplugin.QNPlugin
 class BaseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        //初始化数据库
+        DemoDataBase.getInstance(this)
         val mQNPlugin = QNPlugin.getInstance(this)
         val appId = "123456789"
         val assetFileName = "123456789.qn"

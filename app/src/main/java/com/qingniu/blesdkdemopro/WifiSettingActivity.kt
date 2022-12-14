@@ -22,11 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.qingniu.blesdkdemopro.constant.DemoUnit
 import com.qingniu.blesdkdemopro.db.DemoDataBase
 import com.qingniu.blesdkdemopro.ui.theme.BgGrey
 import com.qingniu.blesdkdemopro.ui.theme.BleSdkDemoProTheme
-import com.qingniu.blesdkdemopro.ui.widget.SelectUnitItem
 import com.qingniu.blesdkdemopro.ui.widget.TitleBar
 
 class WifiSettingActivity : ComponentActivity() {

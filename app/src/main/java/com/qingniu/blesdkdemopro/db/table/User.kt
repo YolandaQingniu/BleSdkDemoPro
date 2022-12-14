@@ -14,19 +14,19 @@ class User {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 
-    @ColumnInfo(name = "userId", defaultValue = "")
+    @ColumnInfo(name = "USERID", defaultValue = "")
     var userId: String = ""
 
-    @ColumnInfo(name = "gender", defaultValue = "MALE")
+    @ColumnInfo(name = "GENDER", defaultValue = "MALE")
     lateinit var gender: String
 
-    @ColumnInfo(name = "age", defaultValue = "30")
+    @ColumnInfo(name = "AGE", defaultValue = "30")
     var age: Int = 30
 
-    @ColumnInfo(name = "height", defaultValue = "180")
+    @ColumnInfo(name = "HEIGHT", defaultValue = "180")
     var height: Int = 180
 
-    @ColumnInfo(name = "isCurrent", defaultValue = "false")
+    @ColumnInfo(name = "IS_CURRENT", defaultValue = "false")
     var isCurrent: Boolean = false
 
 }

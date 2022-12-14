@@ -71,13 +71,12 @@ fun Settings() {
             ctx.startActivity(UnitSelectActivity.getCallIntent(ctx))
         }
 
-        SettingItem(text = "User Setting", true) {
-            ctx.startActivity(UserSettingActivity.getCallIntent(ctx))
+        SettingItem(text = "BPMachine Setting", true) {
+            ctx.startActivity(BPMachineSettingActivity.getCallIntent(ctx))
         }
 
-        SettingItem(text = "Wifi Setting", true) {
-//            ctx.startActivity(WifiSettingActivity.getCallIntent(ctx))
-            ctx.startActivity(QNScalePairNetActivity.getCallIntent(ctx))
+        SettingItem(text = "User Setting", true) {
+            ctx.startActivity(UserSettingActivity.getCallIntent(ctx))
         }
 
         SettingItem(text = "Bind Devices List", false) {

@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -36,12 +37,19 @@ import com.qingniu.blesdkdemopro.ui.theme.BleSdkDemoProTheme
 import com.qingniu.blesdkdemopro.ui.theme.TipGrey
 import com.qingniu.blesdkdemopro.ui.widget.TitleBar
 import com.qingniu.blesdkdemopro.util.DemoBleUtils
+import com.qingniu.qnbpmachineplugin.*
+import com.qingniu.qnbpmachineplugin.listener.QNBPMachineDeviceListener
+import com.qingniu.qnbpmachineplugin.listener.QNBPMachineWiFiListener
 import com.qingniu.qnplugin.QNPlugin
 import com.qingniu.qnplugin.model.QNWeightUnit
 import com.qingniu.qnscaleplugin.QNScalePlugin
 import com.qingniu.qnscaleplugin.QNScaleWiFiMp
-import com.qingniu.qnscaleplugin.listener.*
-import com.qingniu.qnscaleplugin.model.*
+import com.qingniu.qnscaleplugin.listener.QNScaleDeviceListener
+import com.qingniu.qnscaleplugin.listener.QNScaleStatusListener
+import com.qingniu.qnscaleplugin.listener.QNScaleWiFiListener
+import com.qingniu.qnscaleplugin.model.QNScaleDevice
+import com.qingniu.qnscaleplugin.model.QNScaleOperate
+import com.qingniu.qnscaleplugin.model.QNWiFiInfo
 
 class QNScalePairNetActivity : ComponentActivity() {
     // Is connect deivce
@@ -49,10 +57,17 @@ class QNScalePairNetActivity : ComponentActivity() {
     // 是否已经连接设备
     private var mIsConnected = false
 
+    //指定的mac
+    private var specifiedMac:String = ""
+
     companion object {
-        const val TAG = "QNScalePairNet"
+        const val TAG = "QNPairNet"
         fun getCallIntent(ctx: Context): Intent {
             return Intent(ctx, QNScalePairNetActivity::class.java)
+        }
+
+        fun getCallIntent(ctx: Context ,mac: String): Intent {
+            return Intent(ctx, QNScalePairNetActivity::class.java).putExtra("mac", mac)
         }
     }
 
@@ -72,6 +87,8 @@ class QNScalePairNetActivity : ComponentActivity() {
 
     var mDevice: QNScaleDevice? = null
 
+    var mBPMachine:QNBPMachineDevice? = null
+
     var mSsid = ""
     var mPwd = ""
     var mServerUrl = ""
@@ -79,6 +96,7 @@ class QNScalePairNetActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        specifiedMac = intent.getStringExtra("mac")?:""
         setContent {
             BleSdkDemoProTheme {
                 // A surface container using the 'background' color from the theme
@@ -224,123 +242,254 @@ class QNScalePairNetActivity : ComponentActivity() {
     }
 
     private fun init() {
-        QNPlugin.getInstance(this).startScan()
-        QNScalePlugin.setScalePlugin(QNPlugin.getInstance(this))
-        QNScalePlugin.setDeviceListener(object : QNScaleDeviceListener {
-            override fun onDiscoverScaleDevice(device: QNScaleDevice?) {
-                Log.e(TAG, "Discover scale，mac = ${device?.mac} ")
-                if(mIsConnected){
-                    return
-                }
-                QNPlugin.getInstance(this@QNScalePairNetActivity).stopScan()
-                device.let {
-                    val op = QNScaleOperate()
-                    val curWeightUnit = DemoDataBase.getInstance(this@QNScalePairNetActivity)
-                        .unitSettingDao().getUnitSetting().weightUnit
-                    op.unit = when (curWeightUnit) {
-                        DemoUnit.KG.showName -> QNWeightUnit.UNIT_KG
-                        DemoUnit.LB.showName -> QNWeightUnit.UNIT_LB
-                        DemoUnit.ST_LB.showName -> QNWeightUnit.UNIT_ST_LB
-                        DemoUnit.ST.showName -> QNWeightUnit.UNIT_ST
-                        DemoUnit.JIN.showName -> QNWeightUnit.UNIT_JIN
-                        else -> QNWeightUnit.UNIT_KG
+        if (!TextUtils.isEmpty(specifiedMac)){
+            QNBPMachinePlugin.setBPMachinePlugin(QNPlugin.getInstance(this))
+
+            QNBPMachinePlugin.setDeviceListener(object :QNBPMachineDeviceListener{
+                override fun onDiscoverBPMachineDevice(device: QNBPMachineDevice) {
+                    Log.e(TAG,"发现 $device")
+                    if (specifiedMac.toUpperCase().equals(device.mac.toUpperCase())){
+                        QNBPMachinePlugin.connectDevice(device)
+                        QNPlugin.getInstance(this@QNScalePairNetActivity).stopScan()
                     }
-
-                    Log.e(TAG, "Connect scale")
-                    mIsConnecting = true
-                    QNScalePlugin.connectDevice(device, op)
                 }
-            }
 
-            override fun onSetUnitResult(code: Int, device: QNScaleDevice?) {
-                Log.e(TAG, "Set up scale unit success!")
-            }
+                override fun onBPMachineConnectedSuccess(device: QNBPMachineDevice) {
+                    mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.CONNECT
+                    mBPMachine = device
+                }
 
-        })
+                override fun onBPMachineConnectFail(code: Int, device: QNBPMachineDevice) {
+                    mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.DISCONNECT
+                    mBPMachine = null
+                }
 
-        QNScalePlugin.setStatusListener(object : QNScaleStatusListener {
-            override fun onConnectedSuccess(device: QNScaleDevice?) {
-                Log.e(TAG, "Connect scale success!")
-                mIsConnecting = false
-                mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.CONNECT
-                mIsConnected = true
-            }
+                override fun onBPMachineReadyInteractResult(code: Int, device: QNBPMachineDevice) {
+                    val dao = DemoDataBase.getInstance(this@QNScalePairNetActivity).bpMachineSettingDao()
+                    dao.getBPMachineSetting().apply {
 
-            override fun onConnectFail(code: Int, device: QNScaleDevice?) {
-                Log.e(TAG, "Connect scale failed!")
-                mIsConnecting = false
-                mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.DISCONNECT
-                mIsConnected = false
-                mHandler.removeMessages(0)
-            }
+                        val unit = if (this.unit == QNBPMachineUnit.KPA.toString()){
+                            QNBPMachineUnit.KPA
+                        }else{
+                            QNBPMachineUnit.MMHG
+                        }
 
-            override fun onReadyInteractResult(device: QNScaleDevice?) {
-                Log.e(TAG, "Device is ready interact!")
-                mDevice = device
-                mViewModel.mac.value = mDevice?.mac ?: ""
+                        val volume = if (this.volume == QNBPMachineVolume.FIRST_LEVEL.toString()) {
+                            QNBPMachineVolume.FIRST_LEVEL
+                        } else if (this.volume == QNBPMachineVolume.SECOND_LEVEL.toString()) {
+                            QNBPMachineVolume.SECOND_LEVEL
+                        } else if (this.volume == QNBPMachineVolume.THIRD_LEVEL.toString()) {
+                            QNBPMachineVolume.THIRD_LEVEL
+                        } else if (this.volume == QNBPMachineVolume.THIRD_LEVEL.toString()) {
+                            QNBPMachineVolume.THIRD_LEVEL
+                        } else if (this.volume == QNBPMachineVolume.FOURTH_LEVEL.toString()) {
+                            QNBPMachineVolume.FOURTH_LEVEL
+                        } else if (this.volume == QNBPMachineVolume.FIFTH_LEVEL.toString()) {
+                            QNBPMachineVolume.FIFTH_LEVEL
+                        } else {
+                            QNBPMachineVolume.MUTE
+                        }
 
-            }
+                        val standard = if (this.standard == QNBPMachineStandard.USA.toString()) {
+                            QNBPMachineStandard.USA
+                        } else if (this.standard == QNBPMachineStandard.EUROPE.toString()) {
+                            QNBPMachineStandard.EUROPE
+                        } else if (this.standard == QNBPMachineStandard.JAPAN.toString()) {
+                            QNBPMachineStandard.JAPAN
+                        } else {
+                            QNBPMachineStandard.CHINA
+                        }
 
-            override fun onDisconnected(device: QNScaleDevice?) {
-                Log.e(TAG, "Device is disconnected!")
-                mIsConnected = false
-                mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.DISCONNECT
-                mHandler.removeMessages(0)
-            }
-        })
+                        val language = if (this.language == QNBPMachineLanguage.ENGLISH.toString()){
+                            QNBPMachineLanguage.ENGLISH
+                        }else{
+                            QNBPMachineLanguage.CHINESE
+                        }
 
-        QNScaleWiFiMp.setWiFiStatusListener(object : QNScaleWiFiListener {
-            override fun onStartWiFiConnect(device: QNScaleDevice?) {
-                Log.e(TAG, "Start pair net!")
-                mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.PAIR_NET_ING
-                mProgress.value = 0F
-                mHandler.removeMessages(0)
-                mHandler.sendEmptyMessageDelayed(0, 1000)
-            }
+                        val config = QNBPMachineDeploy.buildDeploy(
+                            unit,
+                            volume,
+                            standard,
+                            language,
+                            QNBPMachineTimeZone.E8
+                        )
 
-            override fun onConnectWiFiStatus(code: Int, device: QNScaleDevice?) {
-                Log.e(TAG, if (code == 0) "Pair net success!" else "Pair net failed，status code return： code = $code")
-                if (code == 0) {
-                    mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.PAIR_NET_SUCCESS
-                    Toast.makeText(this@QNScalePairNetActivity, "Pair net success！", Toast.LENGTH_SHORT).show()
-                    val dao = DemoDataBase.getInstance(this@QNScalePairNetActivity).wifiInfoDao()
-                    val wifiInfo = dao.getWifiInfo().apply {
-                        this.ssid = mSsid
-                        this.password = mPwd
-                        this.serverUrl = mServerUrl
+                        QNBPMachinePlugin.setDeviceFunction(device, config)
                     }
-                    dao.update(wifiInfo)
-                } else {
-                    mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.PAIR_NET_FAIL
-                    Toast.makeText(this@QNScalePairNetActivity, "Pair net failed！", Toast.LENGTH_SHORT).show()
                 }
-                mProgress.value = 1F
-                mHandler.removeMessages(0)
-            }
 
-        })
+                override fun onSetBPMachineFunctionResult(code: Int, device: QNBPMachineDevice) {
+                }
+
+                override fun onBPMachineDisconnected(device: QNBPMachineDevice) {
+                    mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.DISCONNECT
+                    mBPMachine = null
+                }
+            })
+
+            QNBPMachineWiFiMp.setWiFiStatusListener(object :QNBPMachineWiFiListener{
+                override fun onDiscoveryNearbyWiFi(
+                    ssid: String,
+                    rssi: Int,
+                    device: QNBPMachineDevice
+                ) {
+
+                }
+
+                override fun onStartWiFiConnect(device: QNBPMachineDevice?) {
+                    mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.PAIR_NET_ING
+                }
+
+                override fun onConnectWiFiStatus(code: Int, device: QNBPMachineDevice?) {
+                    if (code == 0){
+                        mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.PAIR_NET_SUCCESS
+                    }else{
+                        mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.PAIR_NET_FAIL
+                    }
+                }
+            })
+
+            QNPlugin.getInstance(this).startScan()
+
+        }else{
+            QNPlugin.getInstance(this).startScan()
+            QNScalePlugin.setScalePlugin(QNPlugin.getInstance(this))
+            QNScalePlugin.setDeviceListener(object : QNScaleDeviceListener {
+                override fun onDiscoverScaleDevice(device: QNScaleDevice?) {
+                    Log.e(TAG, "Discover scale，mac = ${device?.mac} ")
+                    if(mIsConnected){
+                        return
+                    }
+                    QNPlugin.getInstance(this@QNScalePairNetActivity).stopScan()
+                    device.let {
+                        val op = QNScaleOperate()
+                        val curWeightUnit = DemoDataBase.getInstance(this@QNScalePairNetActivity)
+                            .unitSettingDao().getUnitSetting().weightUnit
+                        op.unit = when (curWeightUnit) {
+                            DemoUnit.KG.showName -> QNWeightUnit.UNIT_KG
+                            DemoUnit.LB.showName -> QNWeightUnit.UNIT_LB
+                            DemoUnit.ST_LB.showName -> QNWeightUnit.UNIT_ST_LB
+                            DemoUnit.ST.showName -> QNWeightUnit.UNIT_ST
+                            DemoUnit.JIN.showName -> QNWeightUnit.UNIT_JIN
+                            else -> QNWeightUnit.UNIT_KG
+                        }
+
+                        Log.e(TAG, "Connect scale")
+                        mIsConnecting = true
+                        QNScalePlugin.connectDevice(device, op)
+                    }
+                }
+
+                override fun onSetUnitResult(code: Int, device: QNScaleDevice?) {
+                    Log.e(TAG, "Set up scale unit success!")
+                }
+
+            })
+
+            QNScalePlugin.setStatusListener(object : QNScaleStatusListener {
+                override fun onConnectedSuccess(device: QNScaleDevice?) {
+                    Log.e(TAG, "Connect scale success!")
+                    mIsConnecting = false
+                    mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.CONNECT
+                    mIsConnected = true
+                }
+
+                override fun onConnectFail(code: Int, device: QNScaleDevice?) {
+                    Log.e(TAG, "Connect scale failed!")
+                    mIsConnecting = false
+                    mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.DISCONNECT
+                    mIsConnected = false
+                    mHandler.removeMessages(0)
+                }
+
+                override fun onReadyInteractResult(device: QNScaleDevice?) {
+                    Log.e(TAG, "Device is ready interact!")
+                    mDevice = device
+                    mViewModel.mac.value = mDevice?.mac ?: ""
+
+                }
+
+                override fun onDisconnected(device: QNScaleDevice?) {
+                    Log.e(TAG, "Device is disconnected!")
+                    mIsConnected = false
+                    mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.DISCONNECT
+                    mHandler.removeMessages(0)
+                }
+            })
+
+            QNScaleWiFiMp.setWiFiStatusListener(object : QNScaleWiFiListener {
+                override fun onStartWiFiConnect(device: QNScaleDevice?) {
+                    Log.e(TAG, "Start pair net!")
+                    mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.PAIR_NET_ING
+                    mProgress.value = 0F
+                    mHandler.removeMessages(0)
+                    mHandler.sendEmptyMessageDelayed(0, 1000)
+                }
+
+                override fun onConnectWiFiStatus(code: Int, device: QNScaleDevice?) {
+                    Log.e(TAG, if (code == 0) "Pair net success!" else "Pair net failed，status code return： code = $code")
+                    if (code == 0) {
+                        mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.PAIR_NET_SUCCESS
+                        Toast.makeText(this@QNScalePairNetActivity, "Pair net success！", Toast.LENGTH_SHORT).show()
+                        val dao = DemoDataBase.getInstance(this@QNScalePairNetActivity).wifiInfoDao()
+                        val wifiInfo = dao.getWifiInfo().apply {
+                            this.ssid = mSsid
+                            this.password = mPwd
+                            this.serverUrl = mServerUrl
+                        }
+                        dao.update(wifiInfo)
+                    } else {
+                        mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.PAIR_NET_FAIL
+                        Toast.makeText(this@QNScalePairNetActivity, "Pair net failed！", Toast.LENGTH_SHORT).show()
+                    }
+                    mProgress.value = 1F
+                    mHandler.removeMessages(0)
+                }
+
+            })
+        }
     }
 
     private fun pairNet(){
-        if(mDevice == null){
-            Toast.makeText(this@QNScalePairNetActivity, "Device is not connected!", Toast.LENGTH_SHORT).show()
-            Log.e(TAG, "Device is not connected!")
-            return
-        }
-        if (mDevice?.supportWiFi == true) {
-            /** 配置wifi **/
-            val wifiInfo = DemoDataBase.getInstance(this@QNScalePairNetActivity)
-                .wifiInfoDao().getWifiInfo()
-            val qnWiFiInfo = QNWiFiInfo()
-            qnWiFiInfo.ssid = wifiInfo.ssid
-            qnWiFiInfo.pwd = wifiInfo.password
-            qnWiFiInfo.serverUrl = wifiInfo.serverUrl
-            Log.e(TAG, "Pair net，wifi = $qnWiFiInfo")
-            Toast.makeText(this@QNScalePairNetActivity, "Pair net ing...", Toast.LENGTH_LONG).show()
-            QNScaleWiFiMp.startConnectWiFi(mDevice, qnWiFiInfo)
-        } else {
-            Toast.makeText(this@QNScalePairNetActivity, "The device is not support pair net!", Toast.LENGTH_SHORT).show()
-            Log.e(TAG, "The device is not support pair net!")
+        if (!TextUtils.isEmpty(specifiedMac)){
+            if (null == mBPMachine){
+                Toast.makeText(this@QNScalePairNetActivity, "Device is not connected!", Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "Device is not connected!")
+                return
+            }else{
+                val code = QNBPMachineWiFiMp.startConnectWiFi(mBPMachine,QNBPMachineWiFi().apply {
+                    ssid = mSsid
+                    pwd = mPwd
+                    serverUrl = "https://wsp-lite.yolanda.hk:443/yolanda/bps?code="
+                })
+                if (code != 0){
+                    Log.e(TAG, "Error code $code")
+                }else{
+                    Log.e(TAG, "Go pair net")
+                    Toast.makeText(this@QNScalePairNetActivity, "Pair net ing...", Toast.LENGTH_LONG).show()
+                }
+            }
+        }else{
+            if(mDevice == null){
+                Toast.makeText(this@QNScalePairNetActivity, "Device is not connected!", Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "Device is not connected!")
+                return
+            }
+            if (mDevice?.supportWiFi == true) {
+                /** 配置wifi **/
+                val wifiInfo = DemoDataBase.getInstance(this@QNScalePairNetActivity)
+                    .wifiInfoDao().getWifiInfo()
+                val qnWiFiInfo = QNWiFiInfo()
+                qnWiFiInfo.ssid = wifiInfo.ssid
+                qnWiFiInfo.pwd = wifiInfo.password
+                qnWiFiInfo.serverUrl = wifiInfo.serverUrl
+                Log.e(TAG, "Pair net，wifi = $qnWiFiInfo")
+                Toast.makeText(this@QNScalePairNetActivity, "Pair net ing...", Toast.LENGTH_LONG).show()
+                QNScaleWiFiMp.startConnectWiFi(mDevice, qnWiFiInfo)
+            } else {
+                Toast.makeText(this@QNScalePairNetActivity, "The device is not support pair net!", Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "The device is not support pair net!")
+            }
         }
     }
 }

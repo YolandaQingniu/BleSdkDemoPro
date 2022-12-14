@@ -14,12 +14,12 @@ class WifiInfo {
     @PrimaryKey(autoGenerate = true)
     var id = 0
 
-    @ColumnInfo(name = "ssid", defaultValue = "")
+    @ColumnInfo(name = "SSID", defaultValue = "")
     var ssid: String = ""
 
-    @ColumnInfo(name = "password", defaultValue = "")
+    @ColumnInfo(name = "PASSWORD", defaultValue = "")
     var password: String = ""
 
-    @ColumnInfo(name = "serverUrl", defaultValue = "")
+    @ColumnInfo(name = "SERVER_URL", defaultValue = "")
     var serverUrl: String = ""
 }
