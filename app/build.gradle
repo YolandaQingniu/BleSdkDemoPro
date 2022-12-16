@@ -111,12 +111,16 @@ dependencies {
         implementation project(':qnAlgorithmPluginX')
         implementation project(':qnRulerPluginX')
         implementation project(':qnScalePluginX')
+        implementation project(':qnKitchenScalePluginX')
+        implementation project(':qnBPMachinePluginX')
     } else if (USE_BLE_TYPE as int == 1) {
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNPluginX:1.2.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNHeightWeightScalePluginX:1.2.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNAlgorithmPluginX:1.2.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNRulerPluginX:1.2.0"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNScalePluginX:1.2.0"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNPluginX:$versionName"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNHeightWeightScalePluginX:$versionName"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNAlgorithmPluginX:$versionName"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNRulerPluginX:$versionName"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNScalePluginX:$versionName"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnKitchenPlugin:$versionName"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:qnBPMachinePlugin:$versionName"
     } else if (USE_BLE_TYPE as int == 2) {
         implementation project(':qnPlugin')
         implementation project(':qnHeightWeightScalePlugin')

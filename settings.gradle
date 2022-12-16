@@ -30,6 +30,8 @@ if (USE_BLE_TYPE as int == 0) {
     include ':qnAlgorithmPluginX'
     include ':qnRulerPluginX'
     include ':qnScalePluginX'
+    include ':qnBPMachinePluginX'
+    include ':qnKitchenScalePluginX'
 } else if (USE_BLE_TYPE as int == 2) {
     //基础SDK
     include ':qnPlugin'

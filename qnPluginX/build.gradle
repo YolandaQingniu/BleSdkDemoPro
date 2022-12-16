@@ -28,15 +28,14 @@ android {
 
     sourceSets {
         main {
-            jniLibs.srcDirs = ['libs']
+            jniLibs.srcDirs = ['libs/lib']
         }
     }
 }
 
 dependencies {
-
-    implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
-    api files('libs/qnplugin-1.2.0.jar')
+    implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs/lib')
+    api fileTree(include: ['*.jar','*.aar'], dir: 'libs/sdk')
 
     implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'com.google.android.material:material:1.6.1'
