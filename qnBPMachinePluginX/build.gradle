@@ -2,6 +2,8 @@ plugins {
     id 'com.android.library'
 }
 
+apply from: "../gradle/publish.gradle"
+
 android {
     namespace 'com.qingniu.qnbpmachinepluginx'
     compileSdk 32
