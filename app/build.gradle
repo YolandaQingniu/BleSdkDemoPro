@@ -12,7 +12,7 @@ android {
         minSdk 21
         targetSdk 32
         versionCode 2
-        versionName "1.3.0"
+        versionName "$VERSION_NAME"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -114,13 +114,13 @@ dependencies {
         implementation project(':qnKitchenScalePluginX')
         implementation project(':qnBPMachinePluginX')
     } else if (USE_BLE_TYPE as int == 1) {
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNPluginX:$versionName"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNHeightWeightScalePluginX:$versionName"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNAlgorithmPluginX:$versionName"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNRulerPluginX:$versionName"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNScalePluginX:$versionName"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNKitchenScalePluginX:$versionName"
-        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNBPMachinePluginX:$versionName"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNPluginX:$VERSION_NAME"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNHeightWeightScalePluginX:$VERSION_NAME"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNAlgorithmPluginX:$VERSION_NAME"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNRulerPluginX:$VERSION_NAME"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNScalePluginX:$VERSION_NAME"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNKitchenScalePluginX:$VERSION_NAME"
+        implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNBPMachinePluginX:$VERSION_NAME"
     } else if (USE_BLE_TYPE as int == 2) {
         implementation project(':qnPlugin')
         implementation project(':qnHeightWeightScalePlugin')
