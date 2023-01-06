@@ -93,9 +93,6 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
                 QNPlugin.getInstance(this@KitchenScaleMeasureActivity).stopScan()
                 device.let {
                     Log.e(TAG, "连接设备")
-                    if(it?.mac != "FF:F2:00:08:95:BD"){
-                        return
-                    }
                     mViewModel.vState.value = KitchenScaleViewModel.MeasureState.CONNECTING
                     QNKitchenPlugin.connectDevice(device)
                 }
