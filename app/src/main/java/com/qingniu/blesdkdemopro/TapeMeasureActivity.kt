@@ -37,8 +37,8 @@ import com.qingniu.qnplugin.model.QNLengthUnit
 import com.qingniu.qnrulerplugin.QNRulerPlugin
 import com.qingniu.qnrulerplugin.listener.QNRulerDataListener
 import com.qingniu.qnrulerplugin.listener.QNRulerDeviceListener
-import com.qingniu.qnrulerplugin.model.QNRulerData
-import com.qingniu.qnrulerplugin.model.QNRulerDevice
+import com.qingniu.qnrulerplugin.QNRulerData
+import com.qingniu.qnrulerplugin.QNRulerDevice
 
 class TapeMeasureActivity : ComponentActivity() {
 
@@ -90,7 +90,8 @@ class TapeMeasureActivity : ComponentActivity() {
     private fun init() {
         QNPlugin.getInstance(this).startScan()
         QNRulerPlugin.setRulerPlugin(QNPlugin.getInstance(this))
-        QNRulerPlugin.setDeviceListener(object : QNRulerDeviceListener{
+        QNRulerPlugin.setDeviceListener(object :
+            QNRulerDeviceListener {
             override fun onDiscoverRulerDevice(device: QNRulerDevice?) {
                 Log.e("tape", "发现围度尺设备")
                 this@TapeMeasureActivity.tapeDevice.let {
@@ -125,7 +126,8 @@ class TapeMeasureActivity : ComponentActivity() {
 
         })
 
-        QNRulerPlugin.setDataListener(object : QNRulerDataListener{
+        QNRulerPlugin.setDataListener(object :
+            QNRulerDataListener {
             override fun onRulerRealTimeData(data: QNRulerData?, device: QNRulerDevice?) {
                 Log.e("tape", "实时测量数据：  ${data?.value}")
                 mViewModel.vState.value = TapeViewModel.MeasureState.MEASURE_LENGTH
@@ -142,7 +144,7 @@ class TapeMeasureActivity : ComponentActivity() {
     }
 }
 
-fun createTapeLengthStr(length: Double, unit: QNLengthUnit): String{
+fun createTapeLengthStr(length: String, unit: QNLengthUnit): String{
     when(unit){
         QNLengthUnit.UNIT_CM -> {
             return "$length cm"

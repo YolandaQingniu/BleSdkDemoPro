@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -47,9 +46,9 @@ import com.qingniu.qnscaleplugin.QNScaleWiFiMp
 import com.qingniu.qnscaleplugin.listener.QNScaleDeviceListener
 import com.qingniu.qnscaleplugin.listener.QNScaleStatusListener
 import com.qingniu.qnscaleplugin.listener.QNScaleWiFiListener
-import com.qingniu.qnscaleplugin.model.QNScaleDevice
-import com.qingniu.qnscaleplugin.model.QNScaleOperate
-import com.qingniu.qnscaleplugin.model.QNWiFiInfo
+import com.qingniu.qnscaleplugin.QNScaleDevice
+import com.qingniu.qnscaleplugin.QNScaleOperate
+import com.qingniu.qnscaleplugin.QNWiFiInfo
 
 class QNScalePairNetActivity : ComponentActivity() {
     // Is connect deivce
@@ -402,7 +401,10 @@ class QNScalePairNetActivity : ComponentActivity() {
                     mHandler.removeMessages(0)
                 }
 
-                override fun onReadyInteractResult(device: QNScaleDevice?) {
+                override fun onReadyInteractResult(
+                    code: Int,
+                    device: QNScaleDevice?
+                ) {
                     Log.e(TAG, "Device is ready interact!")
                     mDevice = device
                     mViewModel.mac.value = mDevice?.mac ?: ""

@@ -36,23 +36,18 @@ import com.qingniu.blesdkdemopro.constant.DemoUnit
 import com.qingniu.blesdkdemopro.constant.UserConstant
 import com.qingniu.blesdkdemopro.db.DemoDataBase
 import com.qingniu.blesdkdemopro.db.table.DeviceUser
-import com.qingniu.blesdkdemopro.db.table.User
 import com.qingniu.blesdkdemopro.ui.theme.BgGrey
 import com.qingniu.blesdkdemopro.ui.theme.BleSdkDemoProTheme
 import com.qingniu.blesdkdemopro.ui.theme.DividerGrey
 import com.qingniu.blesdkdemopro.ui.theme.TipGrey
 import com.qingniu.blesdkdemopro.ui.widget.TitleBar
 import com.qingniu.blesdkdemopro.util.DemoBleUtils
-import com.qingniu.blesdkdemopro.util.SpUtils
 import com.qingniu.qnplugin.QNPlugin
 import com.qingniu.qnplugin.model.QNGender
 import com.qingniu.qnplugin.model.QNLengthUnit
 import com.qingniu.qnplugin.model.QNWeightUnit
-import com.qingniu.qnscaleplugin.QNScalePlugin
-import com.qingniu.qnscaleplugin.QNScaleWiFiMp
-import com.qingniu.qnscaleplugin.QNUserScaleMp
+import com.qingniu.qnscaleplugin.*
 import com.qingniu.qnscaleplugin.listener.*
-import com.qingniu.qnscaleplugin.model.*
 import java.text.DecimalFormat
 
 class QNScaleMeasureActivity : ComponentActivity() {
@@ -200,7 +195,10 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 mViewModel.vState.value = QNScaleViewModel.MeasureState.DISCONNECT
             }
 
-            override fun onReadyInteractResult(device: QNScaleDevice?) {
+            override fun onReadyInteractResult(
+                code: Int,
+                device: QNScaleDevice?
+            ) {
                 Log.e(TAG, "设备允许交互")
                 mDevice = device
                 mViewModel.mac.value = device?.mac ?: ""
@@ -396,7 +394,7 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 index,
                 key,
                 isVisitorMode
-            )
+            ) { code, msg ->  }
             Log.e(TAG, "设置测量用户，user = $qnScaleUser")
             QNUserScaleMp.setMeasureUserToUserDevice(mDevice, qnScaleUser)
         } else {
@@ -407,7 +405,7 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 age,
                 height,
                 false
-            )
+            ) { code, msg -> }
             QNScalePlugin.setMeasureUser(mDevice, qnUser)
         }
     }
@@ -416,7 +414,7 @@ class QNScaleMeasureActivity : ComponentActivity() {
         if (user != null) {
             // 设置用户信息
             val dao = DemoDataBase.getInstance(this@QNScaleMeasureActivity).deviceUserDao()
-            val deviceUsers = dao.getDeviceUser(user.userid)
+            val deviceUsers = dao.getDeviceUser(user.userId)
             if(deviceUsers != null && deviceUsers.isNotEmpty()){
                 val filterUsers = deviceUsers.filter { it.mac == device?.mac }
                 if(filterUsers != null && filterUsers.isNotEmpty()){
@@ -444,7 +442,7 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 insertUser.index = user.index
                 insertUser.mac = device!!.mac
                 insertUser.key = user.key
-                insertUser.userId = user.userid
+                insertUser.userId = user.userId
                 insertUser.isVisitorMode = user.isVisitorMode
                 if (it != null) {
                     insertUser.isSupportUser = it.supportScaleUser
