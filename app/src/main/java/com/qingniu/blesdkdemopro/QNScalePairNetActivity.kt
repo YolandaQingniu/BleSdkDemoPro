@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -401,14 +402,12 @@ class QNScalePairNetActivity : ComponentActivity() {
                     mHandler.removeMessages(0)
                 }
 
-                override fun onReadyInteractResult(
-                    code: Int,
-                    device: QNScaleDevice?
-                ) {
-                    Log.e(TAG, "Device is ready interact!")
-                    mDevice = device
-                    mViewModel.mac.value = mDevice?.mac ?: ""
-
+                override fun onReadyInteractResult(code: Int, device: QNScaleDevice?) {
+                    if(code == 0){
+                        Log.e(TAG, "Device is ready interact!")
+                        mDevice = device
+                        mViewModel.mac.value = mDevice?.mac ?: ""
+                    }
                 }
 
                 override fun onDisconnected(device: QNScaleDevice?) {

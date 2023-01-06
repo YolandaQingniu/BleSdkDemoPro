@@ -34,7 +34,8 @@ import com.qingniu.blesdkdemopro.ui.widget.TitleBar
 import com.qingniu.blesdkdemopro.util.DemoBleUtils
 import com.qingniu.qnkitchenplugin.QNKitchenPlugin
 import com.qingniu.qnkitchenplugin.listener.QNKitchenScaleDeviceListener
-import com.qingniu.qnkitchenplugin.model.QNKitchenScaleDevice
+import com.qingniu.qnkitchenplugin.QNKitchenScaleDevice
+import com.qingniu.qnkitchenplugin.QNKitchenScaleNumberType
 import com.qingniu.qnplugin.QNPlugin
 import com.qingniu.qnplugin.model.QNWeightUnit
 
@@ -83,7 +84,7 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
         init()
     }
 
-    fun init () {
+    fun init() {
         QNPlugin.getInstance(this).startScan()
         QNKitchenPlugin.setKitchenPlugin(QNPlugin.getInstance(this))
         QNKitchenPlugin.setDeviceListener(object : QNKitchenScaleDeviceListener {
@@ -92,23 +93,26 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
                 QNPlugin.getInstance(this@KitchenScaleMeasureActivity).stopScan()
                 device.let {
                     Log.e(TAG, "连接设备")
+                    if(it?.mac != "FF:F2:00:08:95:BD"){
+                        return
+                    }
                     mViewModel.vState.value = KitchenScaleViewModel.MeasureState.CONNECTING
                     QNKitchenPlugin.connectDevice(device)
                 }
             }
 
             override fun onSetKitchenScaleUnitResult(code: Int, device: QNKitchenScaleDevice?) {
-                if(code == 0){
+                if (code == 0) {
                     Log.e(TAG, "设置单位成功")
-                }else {
+                } else {
                     Log.e(TAG, "设置单位失败，code = $code")
                 }
             }
 
             override fun onSetKitchenScaleShellingResult(code: Int, device: QNKitchenScaleDevice?) {
-                if(code == 0){
+                if (code == 0) {
                     Log.e(TAG, "去皮成功")
-                }else {
+                } else {
                     Log.e(TAG, "去皮失败，code = $code")
                 }
             }
@@ -117,9 +121,9 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
                 code: Int,
                 device: QNKitchenScaleDevice?
             ) {
-                if(code == 0){
+                if (code == 0) {
                     Log.e(TAG, "设置待机时间成功")
-                }else {
+                } else {
                     Log.e(TAG, "设置待机时间失败，code = $code")
                 }
             }
@@ -138,14 +142,14 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
             }
 
             override fun onKitchenScaleReadyInteract(code: Int, device: QNKitchenScaleDevice?) {
-                if(code == 0){
+                if (code == 0) {
                     Log.e(TAG, "设备允许交互")
                     mDevice.value = device
                     mViewModel.supportUnitList.value.clear()
                     mDevice.value?.deviceUnitSupportedList?.forEach {
                         mViewModel.supportUnitList.value.add(it)
+                        Log.e(TAG, "设备支持的单位 $it")
                     }
-
                 }
             }
 
@@ -159,28 +163,28 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
         })
 
         QNKitchenPlugin.setDataListener { data, device ->
-            Log.e(TAG, "测量数据： data = $data")
+            Log.e(TAG, "测量数据： data = $data ")
             mViewModel.curUnit.value = data.unit
             mViewModel.timestamp.value = data.timeStamp
             mViewModel.weight.value = data.weight
             mViewModel.isPeel.value = data.isShellingFlag
             mViewModel.isOverWeight.value = data.isOverWeightFlag
             mViewModel.isSteady.value = data.isStableFlag
-//            mViewModel.supportUnitList.value = data.supportUnitList
+//            mViewModel.supportUnitList.value = device.deviceUnitSupportedList
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if(mDevice.value != null){
+        if (mDevice.value != null) {
             QNKitchenPlugin.cancelConnectDevice(mDevice.value)
         }
     }
 }
 
 
-fun createKitchenScaleUnitStr(unit: QNWeightUnit): String{
-    when(unit){
+fun createKitchenScaleUnitStr(unit: QNWeightUnit): String {
+    when (unit) {
         QNWeightUnit.UNIT_G -> {
             return "g"
         }
@@ -196,7 +200,7 @@ fun createKitchenScaleUnitStr(unit: QNWeightUnit): String{
         QNWeightUnit.UNIT_ML_MILK -> {
             return "ml(milk)"
         }
-        else ->{
+        else -> {
             return "g"
         }
     }
@@ -236,7 +240,10 @@ fun KitchenScaleStatusBar() {
 }
 
 @Composable
-fun KitchenScaleMeasureBoard(vm: KitchenScaleViewModel, device: MutableState<QNKitchenScaleDevice?>) {
+fun KitchenScaleMeasureBoard(
+    vm: KitchenScaleViewModel,
+    device: MutableState<QNKitchenScaleDevice?>
+) {
     val ctx = LocalContext.current
 
     Column(
@@ -281,21 +288,32 @@ fun KitchenScaleMeasureBoard(vm: KitchenScaleViewModel, device: MutableState<QNK
                     Row() {
                         vm.supportUnitList.value.forEach {
                             Button(
-                                onClick= {
-                                    if(device.value != null) QNKitchenPlugin.setDeviceUnit(device.value, it)
+                                onClick = {
+                                    if (device.value != null) QNKitchenPlugin.setDeviceUnit(
+                                        device.value,
+                                        it
+                                    )
                                 },
                                 Modifier
-                                    .width(80.dp)
+                                    .width(120.dp)
                                     .height(40.dp),
                                 shape = RectangleShape,
-                                border = BorderStroke(1.dp, if (it == vm.curUnit.value) Color.Blue else Color.LightGray),
-                                colors = ButtonDefaults.buttonColors(Color.White, Color.Gray, Color.White, Color.Gray)
+                                border = BorderStroke(
+                                    1.dp,
+                                    if (it == vm.curUnit.value) Color.Blue else Color.LightGray
+                                ),
+                                colors = ButtonDefaults.buttonColors(
+                                    Color.White,
+                                    Color.Gray,
+                                    Color.White,
+                                    Color.Gray
+                                )
                             ) {
                                 Text(
                                     text = createKitchenScaleUnitStr(it),
                                     Modifier
                                         .padding(start = 10.dp, end = 10.dp),
-                                    color = if(it == vm.curUnit.value)Color.Blue else Color.Gray,
+                                    color = if (it == vm.curUnit.value) Color.Blue else Color.Gray,
                                     textAlign = TextAlign.Center,
                                 )
                             }
@@ -314,7 +332,11 @@ fun KitchenScaleMeasureBoard(vm: KitchenScaleViewModel, device: MutableState<QNK
                     .align(Alignment.Center)
             ) {
                 Text(
-                    text = if(TextUtils.isEmpty(vm.weight.value)) "--" else vm.weight.value,
+                    text = if (TextUtils.isEmpty(vm.weight.value)) "--" else QNKitchenPlugin.getWeightWithUnit(
+                        vm.curUnit.value,
+                        vm.weight.value,
+                        QNKitchenScaleNumberType.QNKitchenScaleNumberTypeOneDecimal
+                    ),
                     Modifier
                         .align(Alignment.Top)
                         .padding(top = 50.dp),
@@ -334,7 +356,7 @@ fun KitchenScaleMeasureBoard(vm: KitchenScaleViewModel, device: MutableState<QNK
                     .padding(top = 10.dp)
                     .align(Alignment.TopEnd)
             ) {
-                if(vm.isOverWeight.value){
+                if (vm.isOverWeight.value) {
                     Text(
                         text = "超载",
                         Modifier
@@ -342,7 +364,7 @@ fun KitchenScaleMeasureBoard(vm: KitchenScaleViewModel, device: MutableState<QNK
                             .padding(end = 10.dp)
                     )
                 }
-                if(vm.isPeel.value){
+                if (vm.isPeel.value) {
                     Text(
                         text = "已去皮",
                         Modifier
@@ -360,7 +382,7 @@ fun KitchenScaleMeasureBoard(vm: KitchenScaleViewModel, device: MutableState<QNK
         }
         Button(
             onClick = {
-                if(device.value != null && device.value!!.deviceSupportShelling) {
+                if (device.value != null && device.value!!.deviceSupportShelling) {
                     QNKitchenPlugin.setDeviceShelling(device.value)
                 }
             },
@@ -370,7 +392,12 @@ fun KitchenScaleMeasureBoard(vm: KitchenScaleViewModel, device: MutableState<QNK
                 .padding(start = 20.dp, end = 20.dp),
             shape = RoundedCornerShape(3.dp),
             border = BorderStroke(1.dp, Color.Gray),
-            colors= ButtonDefaults.buttonColors(Color.White, Color.Gray, Color.LightGray, Color.Gray),
+            colors = ButtonDefaults.buttonColors(
+                Color.White,
+                Color.Gray,
+                Color.LightGray,
+                Color.Gray
+            ),
         ) {
             Text(text = "去皮")
         }
@@ -386,7 +413,8 @@ class KitchenScaleViewModel : ViewModel() {
     var mac: MutableState<String> = mutableStateOf("")
     var timestamp: MutableState<String> = mutableStateOf("")
     var weight: MutableState<String> = mutableStateOf("")
-    var supportUnitList: MutableState<MutableList<QNWeightUnit>> = mutableStateOf(mutableListOf(QNWeightUnit.UNIT_G))
+    var supportUnitList: MutableState<MutableList<QNWeightUnit>> =
+        mutableStateOf(mutableListOf(QNWeightUnit.UNIT_G))
     var curUnit: MutableState<QNWeightUnit> = mutableStateOf(QNWeightUnit.UNIT_G)
     var isPeel: MutableState<Boolean> = mutableStateOf(false)
     var isOverWeight: MutableState<Boolean> = mutableStateOf(false)
