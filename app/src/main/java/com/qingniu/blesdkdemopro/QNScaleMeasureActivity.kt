@@ -356,8 +356,9 @@ class QNScaleMeasureActivity : ComponentActivity() {
                 }
             }
 
-            override fun onGetLastDataHmac(user: QNScaleUser?, device: QNScaleDevice?) {
+            override fun onGetLastDataHmac(user: QNScaleUser?, device: QNScaleDevice?): String? {
                 Log.e(TAG, "onGetLastDataHmac： user = $user")
+                return null
             }
 
         })
