@@ -39,10 +39,10 @@ import com.qingniu.blesdkdemopro.util.DemoBleUtils
 import com.qingniu.qnheightweightscaleplugin.QNHeightWeightScalePlugin
 import com.qingniu.qnheightweightscaleplugin.listener.QNHeightWeightScaleDataListener
 import com.qingniu.qnheightweightscaleplugin.listener.QNHeightWeightScaleStatusListener
-import com.qingniu.qnheightweightscaleplugin.model.QNHeightWeightScaleData
-import com.qingniu.qnheightweightscaleplugin.model.QNHeightWeightScaleDevice
-import com.qingniu.qnheightweightscaleplugin.model.QNHeightWeightScaleOperate
-import com.qingniu.qnheightweightscaleplugin.model.QNHeightWeightUser
+import com.qingniu.qnheightweightscaleplugin.QNHeightWeightScaleData
+import com.qingniu.qnheightweightscaleplugin.QNHeightWeightScaleDevice
+import com.qingniu.qnheightweightscaleplugin.QNHeightWeightScaleOperate
+import com.qingniu.qnheightweightscaleplugin.QNHeightWeightUser
 import com.qingniu.qnplugin.QNPlugin
 import com.qingniu.qnplugin.inter.QNScanListener
 import com.qingniu.qnplugin.model.QNGender

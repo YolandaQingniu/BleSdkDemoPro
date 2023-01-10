@@ -142,6 +142,7 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
                 if (code == 0) {
                     Log.e(TAG, "设备允许交互")
                     mDevice.value = device
+                    mViewModel.mac.value = mDevice.value?.mac ?: ""
                     mViewModel.supportUnitList.value.clear()
                     mDevice.value?.deviceUnitSupportedList?.forEach {
                         mViewModel.supportUnitList.value.add(it)
@@ -163,7 +164,8 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
             Log.e(TAG, "测量数据： data = $data ")
             mViewModel.curUnit.value = data.unit
             mViewModel.timestamp.value = data.timeStamp
-            mViewModel.weight.value = data.weight
+            mViewModel.weight.value = if(data.isReverseWeightFlag) "-${data.weight}" else data.weight
+            mViewModel.curNumberType.value = device.deviceNumberType
             mViewModel.isPeel.value = data.isShellingFlag
             mViewModel.isOverWeight.value = data.isOverWeightFlag
             mViewModel.isSteady.value = data.isStableFlag
@@ -258,7 +260,7 @@ fun KitchenScaleMeasureBoard(
                 .height(30.dp)
         ) {
             Text(
-                text = cMac,
+                text = "Mac: $cMac",
                 Modifier
                     .align(Alignment.CenterStart)
                     .padding(start = 20.dp)
@@ -332,7 +334,7 @@ fun KitchenScaleMeasureBoard(
                     text = if (TextUtils.isEmpty(vm.weight.value)) "--" else QNKitchenPlugin.getWeightWithUnit(
                         vm.curUnit.value,
                         vm.weight.value,
-                        QNKitchenScaleNumberType.QNKitchenScaleNumberTypeOneDecimal
+                        vm.curNumberType.value
                     ),
                     Modifier
                         .align(Alignment.Top)
@@ -413,6 +415,7 @@ class KitchenScaleViewModel : ViewModel() {
     var supportUnitList: MutableState<MutableList<QNWeightUnit>> =
         mutableStateOf(mutableListOf(QNWeightUnit.UNIT_G))
     var curUnit: MutableState<QNWeightUnit> = mutableStateOf(QNWeightUnit.UNIT_G)
+    var curNumberType: MutableState<QNKitchenScaleNumberType> = mutableStateOf(QNKitchenScaleNumberType.QNKitchenScaleNumberTypeOneDecimal)
     var isPeel: MutableState<Boolean> = mutableStateOf(false)
     var isOverWeight: MutableState<Boolean> = mutableStateOf(false)
     var isSteady: MutableState<Boolean> = mutableStateOf(false)
