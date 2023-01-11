@@ -348,7 +348,7 @@ class QNScaleMeasureActivity : ComponentActivity() {
             }
 
             override fun onReceiveStoredData(
-                storedDataList: MutableList<QNScaleStoredData>?,
+                storedDataList: MutableList<QNScaleData>,
                 device: QNScaleDevice?
             ) {
                 storedDataList?.forEach {
