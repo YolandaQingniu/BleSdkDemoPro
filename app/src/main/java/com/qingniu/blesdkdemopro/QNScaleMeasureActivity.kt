@@ -421,9 +421,9 @@ class QNScaleMeasureActivity : ComponentActivity() {
         if (user != null) {
             // 设置用户信息
             val dao = DemoDataBase.getInstance(this@QNScaleMeasureActivity).deviceUserDao()
-            val deviceUsers = dao.getDeviceUser(user.userId)
+            val deviceUsers = dao.getAllDeviceUser()
             if(deviceUsers != null && deviceUsers.isNotEmpty()){
-                val filterUsers = deviceUsers.filter { it.mac == device?.mac }
+                val filterUsers = deviceUsers.filter { it.mac == device?.mac && it.userId == user.userId}
                 if(filterUsers != null && filterUsers.isNotEmpty()){
                     val updateUser = filterUsers.get(0)
                     updateUser.index = user.index
@@ -596,7 +596,7 @@ fun QNScaleMeasureBoard() {
                         Indicator("height", hsvm.height.value, false)
                         Indicator("bmi", hsvm.bmi.value, true)
                         if (!TextUtils.isEmpty(hsvm.timestamp.value)) {
-                            QNScaleIndicator("timeStamp", hsvm.timestamp.value, false)
+                            QNScaleIndicator("timeStamp", DateUtils.formatDateTime(ctx,hsvm.timestamp.value.toLong()*1000L,DateUtils.FORMAT_SHOW_TIME), false)
                         }
                         if (!TextUtils.isEmpty(hsvm.bodyFatRate.value)) {
                             QNScaleIndicator("bodyFatRate", hsvm.bodyFatRate.value, true)
