@@ -47,6 +47,7 @@ import com.qingniu.qnplugin.model.QNWeightUnit
  */
 class KitchenScaleMeasureActivity : ComponentActivity() {
 
+    @Volatile
     private var mIsConnected = false
 
     private var mDevice: MutableState<QNKitchenScaleDevice?> = mutableStateOf(null)
@@ -92,10 +93,13 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
             override fun onDiscoverKitchenScaleDevice(device: QNKitchenScaleDevice?) {
                 Log.e(QNScaleMeasureActivity.TAG, "发现设备，mac = ${device?.mac} ")
                 QNPlugin.getInstance(this@KitchenScaleMeasureActivity).stopScan()
-                device.let {
-                    Log.e(TAG, "连接设备")
-                    mViewModel.vState.value = KitchenScaleViewModel.MeasureState.CONNECTING
-                    QNKitchenScalePlugin.connectDevice(device)
+                if (!mIsConnected){
+                    device.let {
+                        mIsConnected = true
+                        Log.e(TAG, "连接设备")
+                        mViewModel.vState.value = KitchenScaleViewModel.MeasureState.CONNECTING
+                        QNKitchenScalePlugin.connectDevice(device)
+                    }
                 }
             }
 
