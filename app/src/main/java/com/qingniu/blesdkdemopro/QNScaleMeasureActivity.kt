@@ -36,16 +36,13 @@ import com.qingniu.blesdkdemopro.constant.DemoUnit
 import com.qingniu.blesdkdemopro.constant.UserConstant
 import com.qingniu.blesdkdemopro.db.DemoDataBase
 import com.qingniu.blesdkdemopro.db.table.DeviceUser
-import com.qingniu.blesdkdemopro.db.table.User
 import com.qingniu.blesdkdemopro.ui.theme.BgGrey
 import com.qingniu.blesdkdemopro.ui.theme.BleSdkDemoProTheme
 import com.qingniu.blesdkdemopro.ui.theme.DividerGrey
 import com.qingniu.blesdkdemopro.ui.theme.TipGrey
 import com.qingniu.blesdkdemopro.ui.widget.TitleBar
 import com.qingniu.blesdkdemopro.util.DemoBleUtils
-import com.qingniu.blesdkdemopro.util.SpUtils
 import com.qingniu.qnplugin.QNPlugin
-import com.qingniu.qnplugin.inter.QNResultCallback
 import com.qingniu.qnplugin.model.QNGender
 import com.qingniu.qnplugin.model.QNLengthUnit
 import com.qingniu.qnplugin.model.QNWeightUnit

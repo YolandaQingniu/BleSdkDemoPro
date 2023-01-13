@@ -27,14 +27,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.qingniu.blecenter.utils.QNLogger
 import com.qingniu.blesdkdemopro.ui.theme.BgGrey
 import com.qingniu.blesdkdemopro.ui.theme.BleSdkDemoProTheme
 import com.qingniu.blesdkdemopro.ui.theme.TipGrey
 import com.qingniu.blesdkdemopro.ui.widget.TitleBar
 import com.qingniu.blesdkdemopro.util.DemoBleUtils
-import com.qingniu.qnkitchenplugin.NumberType
+import com.qingniu.qnkitchenplugin.QNKitchenScaleNumberType
 import com.qingniu.qnkitchenplugin.QNKitchenScaleDevice
-import com.qingniu.qnkitchenplugin.QNKitchenScalePlugin
+import com.qingniu.qnkitchenplugin.QNKitchenPlugin
 import com.qingniu.qnkitchenplugin.listener.QNKitchenScaleDeviceListener
 import com.qingniu.qnplugin.QNPlugin
 import com.qingniu.qnplugin.model.QNWeightUnit
@@ -86,15 +87,15 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
 
     fun init() {
         QNPlugin.getInstance(this).startScan()
-        QNKitchenScalePlugin.setKitchenScalePlugin(QNPlugin.getInstance(this))
-        QNKitchenScalePlugin.setDeviceListener(object : QNKitchenScaleDeviceListener {
+        QNKitchenPlugin.setKitchenPlugin(QNPlugin.getInstance(this))
+        QNKitchenPlugin.setDeviceListener(object : QNKitchenScaleDeviceListener {
             override fun onDiscoverKitchenScaleDevice(device: QNKitchenScaleDevice?) {
                 Log.e(QNScaleMeasureActivity.TAG, "发现设备，mac = ${device?.mac} ")
                 QNPlugin.getInstance(this@KitchenScaleMeasureActivity).stopScan()
                 device.let {
                     Log.e(TAG, "连接设备")
                     mViewModel.vState.value = KitchenScaleViewModel.MeasureState.CONNECTING
-                    QNKitchenScalePlugin.connectDevice(device)
+                    QNKitchenPlugin.connectDevice(device)
                 }
             }
 
@@ -160,7 +161,7 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
 
         })
 
-        QNKitchenScalePlugin.setDataListener { data, device ->
+        QNKitchenPlugin.setDataListener { data, device ->
             Log.e(TAG, "测量数据： data = $data ")
             mViewModel.curUnit.value = data.unit
             mViewModel.timestamp.value = data.timeStamp
@@ -176,7 +177,7 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (mDevice.value != null) {
-            QNKitchenScalePlugin.cancelConnectDevice(mDevice.value)
+            QNKitchenPlugin.cancelConnectDevice(mDevice.value)
         }
     }
 }
@@ -288,7 +289,7 @@ fun KitchenScaleMeasureBoard(
                         vm.supportUnitList.value.forEach {
                             Button(
                                 onClick = {
-                                    if (device.value != null) QNKitchenScalePlugin.setDeviceUnit(
+                                    if (device.value != null) QNKitchenPlugin.setDeviceUnit(
                                         device.value,
                                         it
                                     )
@@ -331,7 +332,7 @@ fun KitchenScaleMeasureBoard(
                     .align(Alignment.Center)
             ) {
                 Text(
-                    text = if (TextUtils.isEmpty(vm.weight.value)) "--" else QNKitchenScalePlugin.getWeightWithUnit(
+                    text = if (TextUtils.isEmpty(vm.weight.value)) "--" else QNKitchenPlugin.getWeightWithUnit(
                         vm.curUnit.value,
                         vm.weight.value,
                         vm.curNumberType.value
@@ -381,8 +382,9 @@ fun KitchenScaleMeasureBoard(
         }
         Button(
             onClick = {
+                QNLogger.logD("KitchenScaleMeasureActivity", "deviceSupportShelling = ${device.value!!.deviceSupportShelling}")
                 if (device.value != null && device.value!!.deviceSupportShelling) {
-                    QNKitchenScalePlugin.setDeviceShelling(device.value)
+                    QNKitchenPlugin.setDeviceShelling(device.value)
                 }
             },
             Modifier
@@ -415,7 +417,7 @@ class KitchenScaleViewModel : ViewModel() {
     var supportUnitList: MutableState<MutableList<QNWeightUnit>> =
         mutableStateOf(mutableListOf(QNWeightUnit.UNIT_G))
     var curUnit: MutableState<QNWeightUnit> = mutableStateOf(QNWeightUnit.UNIT_G)
-    var curNumberType: MutableState<NumberType> = mutableStateOf(NumberType.TYPE_ONE_DECIMAL)
+    var curNumberType: MutableState<QNKitchenScaleNumberType> = mutableStateOf(QNKitchenScaleNumberType.QNKitchenScaleNumberTypeOneDecimal)
     var isPeel: MutableState<Boolean> = mutableStateOf(false)
     var isOverWeight: MutableState<Boolean> = mutableStateOf(false)
     var isSteady: MutableState<Boolean> = mutableStateOf(false)
