@@ -92,8 +92,8 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
         QNKitchenScalePlugin.setDeviceListener(object : QNKitchenScaleDeviceListener {
             override fun onDiscoverKitchenScaleDevice(device: QNKitchenScaleDevice?) {
                 Log.e(QNScaleMeasureActivity.TAG, "发现设备，mac = ${device?.mac} ")
-                QNPlugin.getInstance(this@KitchenScaleMeasureActivity).stopScan()
                 if (!mIsConnected){
+                    QNPlugin.getInstance(this@KitchenScaleMeasureActivity).stopScan()
                     device.let {
                         mIsConnected = true
                         Log.e(TAG, "连接设备")
@@ -139,7 +139,7 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
             override fun onKitchenScaleConnectFail(device: QNKitchenScaleDevice?) {
                 Log.e(TAG, "设备连接失败")
                 mViewModel.vState.value = KitchenScaleViewModel.MeasureState.DISCONNECT
-                mIsConnected
+                mIsConnected = false
                 mDevice.value = null
             }
 
@@ -172,6 +172,7 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
             mViewModel.weight.value = if(data.isReverseWeightFlag) "-${data.weight}" else data.weight
             device.deviceNumberType?.let {
                 mViewModel.curNumberType.value = it
+                Log.e(TAG, "测量数据： curNumberType = $it ")
             }
 
             mViewModel.isPeel.value = data.isShellingFlag
