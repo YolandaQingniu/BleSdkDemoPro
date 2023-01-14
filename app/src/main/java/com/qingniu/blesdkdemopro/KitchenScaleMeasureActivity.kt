@@ -166,7 +166,10 @@ class KitchenScaleMeasureActivity : ComponentActivity() {
             mViewModel.curUnit.value = data.unit
             mViewModel.timestamp.value = data.timeStamp
             mViewModel.weight.value = if(data.isReverseWeightFlag) "-${data.weight}" else data.weight
-            mViewModel.curNumberType.value = device.deviceNumberType
+            device.deviceNumberType?.let {
+                mViewModel.curNumberType.value = it
+            }
+
             mViewModel.isPeel.value = data.isShellingFlag
             mViewModel.isOverWeight.value = data.isOverWeightFlag
             mViewModel.isSteady.value = data.isStableFlag

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
+import android.text.format.DateUtils
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -596,7 +597,8 @@ fun QNScaleMeasureBoard() {
                         Indicator("height", hsvm.height.value, false)
                         Indicator("bmi", hsvm.bmi.value, true)
                         if (!TextUtils.isEmpty(hsvm.timestamp.value)) {
-                            QNScaleIndicator("timeStamp", DateUtils.formatDateTime(ctx,hsvm.timestamp.value.toLong()*1000L,DateUtils.FORMAT_SHOW_TIME), false)
+                            QNScaleIndicator("timeStamp", DateUtils.formatDateTime(ctx,hsvm.timestamp.value.toLong()*1000L,
+                                DateUtils.FORMAT_SHOW_TIME), false)
                         }
                         if (!TextUtils.isEmpty(hsvm.bodyFatRate.value)) {
                             QNScaleIndicator("bodyFatRate", hsvm.bodyFatRate.value, true)
