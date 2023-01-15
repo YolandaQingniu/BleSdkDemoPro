@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.qingniu.blecenter.utils.QNLogger
 import com.qingniu.blesdkdemopro.ui.theme.BgGrey
 import com.qingniu.blesdkdemopro.ui.theme.BleSdkDemoProTheme
 import com.qingniu.blesdkdemopro.ui.theme.TipGrey
@@ -390,7 +389,7 @@ fun KitchenScaleMeasureBoard(
         }
         Button(
             onClick = {
-                QNLogger.logD("KitchenScaleMeasureActivity", "deviceSupportShelling = ${device.value!!.deviceSupportShelling}")
+                Log.d("KitchenScaleActivity", "deviceSupportShelling = ${device.value!!.deviceSupportShelling}")
                 if (device.value != null && device.value!!.deviceSupportShelling) {
                     QNKitchenScalePlugin.setDeviceShelling(device.value)
                 }

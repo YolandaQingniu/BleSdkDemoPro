@@ -40,28 +40,28 @@ allprojects {
 
 Core Plugin (necessary):
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNPluginX:1.3.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNPluginX:1.4.0"
 
 Algorithm Plugin (scale need):
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNAlgorithmPluginX:1.3.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNAlgorithmPluginX:1.4.0"
 
 HeightWeightScale Plugin:
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNHeightWeightScalePluginX:1.3.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNHeightWeightScalePluginX:1.4.0"
 
 Ruler Plugin:
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNRulerPluginX:1.3.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNRulerPluginX:1.4.0"
 
 Scale Plugin:
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNScalePluginX:1.3.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNScalePluginX:1.4.0"
 
 KitchenScale Plugin:
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNKitchenScalePluginX:1.3.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNKitchenScalePluginX:1.4.0"
 
 BPMachine Plugin:
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNBPMachinePluginX:1.3.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNBPMachinePluginX:1.4.0"
