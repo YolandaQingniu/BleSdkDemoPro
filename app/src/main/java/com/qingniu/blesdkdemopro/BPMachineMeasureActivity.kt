@@ -106,7 +106,7 @@ class BPMachineMeasureActivity : ComponentActivity() {
         })
 
         QNBPMachinePlugin.setDeviceListener(object :QNBPMachineDeviceListener{
-            override fun onDiscoverBPMachineDevice(device: QNBPMachineDevice) {
+            override fun onDiscoverDevice(device: QNBPMachineDevice) {
                 QNPlugin.getInstance(this@BPMachineMeasureActivity).stopScan()
                 Log.e(TAG,"发现 $device")
                 QNBPMachinePlugin.connectDevice(device)
@@ -124,15 +124,15 @@ class BPMachineMeasureActivity : ComponentActivity() {
                 }
             }
 
-            override fun onBPMachineConnectedSuccess(device: QNBPMachineDevice) {
+            override fun onConnectedSuccess(device: QNBPMachineDevice) {
                 bpViewModel.vState.value = BPViewModel.MeasureState.CONNECT
             }
 
-            override fun onBPMachineConnectFail(code: Int, device: QNBPMachineDevice) {
+            override fun onConnectFail(code: Int, device: QNBPMachineDevice) {
                 bpViewModel.vState.value = BPViewModel.MeasureState.DISCONNECT
             }
 
-            override fun onBPMachineReadyInteractResult(code: Int, device: QNBPMachineDevice) {
+            override fun onReadyInteractResult(code: Int, device: QNBPMachineDevice) {
                 Toast.makeText(this@BPMachineMeasureActivity, "有${device.currentStorageCount}条存储数据", Toast.LENGTH_SHORT).show()
 
                 val dao = DemoDataBase.getInstance(this@BPMachineMeasureActivity).bpMachineSettingDao()
@@ -164,9 +164,7 @@ class BPMachineMeasureActivity : ComponentActivity() {
                         QNBPMachineStandard.USA
                     } else if (this.standard == QNBPMachineStandard.EUROPE.toString()) {
                         QNBPMachineStandard.EUROPE
-                    } else if (this.standard == QNBPMachineStandard.JAPAN.toString()) {
-                        QNBPMachineStandard.JAPAN
-                    } else {
+                    }else {
                         QNBPMachineStandard.CHINA
                     }
 
@@ -180,21 +178,19 @@ class BPMachineMeasureActivity : ComponentActivity() {
                         unit,
                         volume,
                         standard,
-                        language,
-                        QNBPMachineTimeZone.E8
-                    )
+                        language)
 
                     QNBPMachinePlugin.setDeviceFunction(device, config)
                 }
             }
 
-            override fun onSetBPMachineFunctionResult(code: Int, device: QNBPMachineDevice) {
+            override fun onSetFunctionResult(code: Int, device: QNBPMachineDevice) {
                 if (code == 0){
                     QNBPMachinePlugin.readStoredData(device)
                 }
             }
 
-            override fun onBPMachineDisconnected(device: QNBPMachineDevice?) {
+            override fun onDisconnected(device: QNBPMachineDevice?) {
                 bpViewModel.vState.value = BPViewModel.MeasureState.DISCONNECT
             }
         })

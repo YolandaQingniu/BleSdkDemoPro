@@ -71,7 +71,10 @@ class BPMachineSettingActivity : ComponentActivity() {
 
                         SelectConfigList(
                             "Unit",
-                            arrayListOf<QNBPMachineUnit>(QNBPMachineUnit.MMHG, QNBPMachineUnit.KPA),
+                            arrayListOf<QNBPMachineUnit>(
+                                QNBPMachineUnit.MMHG,
+                                QNBPMachineUnit.KPA
+                            ),
                             unit
                         ) {
                             val setting = dao.getBPMachineSetting().apply {
@@ -107,7 +110,6 @@ class BPMachineSettingActivity : ComponentActivity() {
                                 QNBPMachineStandard.CHINA,
                                 QNBPMachineStandard.USA,
                                 QNBPMachineStandard.EUROPE,
-                                QNBPMachineStandard.JAPAN
                             ),
                             standard
                         ) {

@@ -246,7 +246,7 @@ class QNScalePairNetActivity : ComponentActivity() {
             QNBPMachinePlugin.setBPMachinePlugin(QNPlugin.getInstance(this))
 
             QNBPMachinePlugin.setDeviceListener(object :QNBPMachineDeviceListener{
-                override fun onDiscoverBPMachineDevice(device: QNBPMachineDevice) {
+                override fun onDiscoverDevice(device: QNBPMachineDevice) {
                     Log.e(TAG,"发现 $device")
                     if (specifiedMac.toUpperCase().equals(device.mac.toUpperCase())){
                         QNBPMachinePlugin.connectDevice(device)
@@ -254,17 +254,17 @@ class QNScalePairNetActivity : ComponentActivity() {
                     }
                 }
 
-                override fun onBPMachineConnectedSuccess(device: QNBPMachineDevice) {
+                override fun onConnectedSuccess(device: QNBPMachineDevice) {
                     mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.CONNECT
                     mBPMachine = device
                 }
 
-                override fun onBPMachineConnectFail(code: Int, device: QNBPMachineDevice) {
+                override fun onConnectFail(code: Int, device: QNBPMachineDevice) {
                     mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.DISCONNECT
                     mBPMachine = null
                 }
 
-                override fun onBPMachineReadyInteractResult(code: Int, device: QNBPMachineDevice) {
+                override fun onReadyInteractResult(code: Int, device: QNBPMachineDevice) {
                     val dao = DemoDataBase.getInstance(this@QNScalePairNetActivity).bpMachineSettingDao()
                     dao.getBPMachineSetting().apply {
 
@@ -294,8 +294,6 @@ class QNScalePairNetActivity : ComponentActivity() {
                             QNBPMachineStandard.USA
                         } else if (this.standard == QNBPMachineStandard.EUROPE.toString()) {
                             QNBPMachineStandard.EUROPE
-                        } else if (this.standard == QNBPMachineStandard.JAPAN.toString()) {
-                            QNBPMachineStandard.JAPAN
                         } else {
                             QNBPMachineStandard.CHINA
                         }
@@ -310,18 +308,16 @@ class QNScalePairNetActivity : ComponentActivity() {
                             unit,
                             volume,
                             standard,
-                            language,
-                            QNBPMachineTimeZone.E8
-                        )
+                            language)
 
                         QNBPMachinePlugin.setDeviceFunction(device, config)
                     }
                 }
 
-                override fun onSetBPMachineFunctionResult(code: Int, device: QNBPMachineDevice) {
+                override fun onSetFunctionResult(code: Int, device: QNBPMachineDevice) {
                 }
 
-                override fun onBPMachineDisconnected(device: QNBPMachineDevice) {
+                override fun onDisconnected(device: QNBPMachineDevice) {
                     mViewModel.pairNetState.value = QNScalePairNetViewModel.PairNetState.DISCONNECT
                     mBPMachine = null
                 }

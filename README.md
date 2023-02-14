@@ -26,6 +26,11 @@ https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
 
 ```
 -keep class com.qingniu.scale.model.BleScaleData{*;}
+
+-keep classmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
 ```
 
 ### Download
@@ -40,28 +45,28 @@ allprojects {
 
 Core Plugin (necessary):
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNPluginX:1.4.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNPluginX:1.4.1"
 
 Algorithm Plugin (scale need):
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNAlgorithmPluginX:1.4.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNAlgorithmPluginX:1.4.1"
 
 HeightWeightScale Plugin:
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNHeightWeightScalePluginX:1.4.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNHeightWeightScalePluginX:1.4.1"
 
 Ruler Plugin:
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNRulerPluginX:1.4.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNRulerPluginX:1.4.1"
 
 Scale Plugin:
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNScalePluginX:1.4.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNScalePluginX:1.4.1"
 
 KitchenScale Plugin:
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNKitchenScalePluginX:1.4.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNKitchenScalePluginX:1.4.1"
 
 BPMachine Plugin:
 
-> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNBPMachinePluginX:1.4.0"
+> implementation "com.github.YolandaQingniu.BleSdkDemoPro:QNBPMachinePluginX:1.4.1"

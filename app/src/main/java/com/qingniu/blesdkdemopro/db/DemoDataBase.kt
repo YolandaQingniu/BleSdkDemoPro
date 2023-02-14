@@ -62,9 +62,9 @@ abstract class DemoDataBase : RoomDatabase() {
                             if (null == sInstance!!.bpMachineSettingDao().getBPMachineSetting()){
                                 sInstance!!.bpMachineSettingDao().insert(BPMachineSetting().apply {
                                     unit = QNBPMachineUnit.MMHG.toString()
-                                    volume = QNBPMachineVolume.THIRD_LEVEL.toString()
-                                    standard = QNBPMachineStandard.CHINA.toString()
-                                    language = QNBPMachineLanguage.CHINESE.toString()
+                                    volume = QNBPMachineVolume.SECOND_LEVEL.toString()
+                                    standard = QNBPMachineStandard.USA.toString()
+                                    language = QNBPMachineLanguage.ENGLISH.toString()
                                 })
                             }
                         }
