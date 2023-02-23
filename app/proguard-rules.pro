@@ -21,3 +21,8 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.qingniu.scale.model.BleScaleData{*;}
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
