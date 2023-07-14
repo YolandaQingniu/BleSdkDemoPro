@@ -25,7 +25,7 @@ https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
 ### ProGuard
 
 ```
--keep class com.qingniu.scale.model.BleScaleData{*;}
+-keep class com.qingniu.** {*;}
 
 -keep classmembers enum * {
     public static **[] values();
