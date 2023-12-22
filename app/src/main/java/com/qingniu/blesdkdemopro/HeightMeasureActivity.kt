@@ -43,6 +43,7 @@ import com.qingniu.qnheightweightscaleplugin.QNHeightWeightScaleData
 import com.qingniu.qnheightweightscaleplugin.QNHeightWeightScaleDevice
 import com.qingniu.qnheightweightscaleplugin.QNHeightWeightScaleOperate
 import com.qingniu.qnheightweightscaleplugin.QNHeightWeightUser
+import com.qingniu.qnheightweightscaleplugin.teeny.QnHeightWeightTeenySimplyData
 import com.qingniu.qnplugin.QNPlugin
 import com.qingniu.qnplugin.inter.QNScanListener
 import com.qingniu.qnplugin.model.QNGender
@@ -212,7 +213,7 @@ class HeightMeasureActivity : ComponentActivity() {
                 val age = DemoDataBase.getInstance(this@HeightMeasureActivity)
                     .userDao().getUser().age
 
-                scaleData.makeDataComplete(QNHeightWeightUser("001", gender, age))
+                scaleData.makeDataComplete(QNHeightWeightUser("001", gender, age, false))
 
                 mHeightScaleViewModel.apply {
                     this.weightStr.value = createWeightIndicatorStr(scaleData.weight)
@@ -258,6 +259,13 @@ class HeightMeasureActivity : ComponentActivity() {
             override fun onHeightWeightScaleReceiveStorageData(
                 list: MutableList<QNHeightWeightScaleData>,
                 device: QNHeightWeightScaleDevice
+            ) {
+
+            }
+
+            override fun onHeightWeightScaleReceiveTeenyData(
+                teenData: QnHeightWeightTeenySimplyData?,
+                device: QNHeightWeightScaleDevice?
             ) {
 
             }
